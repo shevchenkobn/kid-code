@@ -1,8 +1,15 @@
 angular.module('code-tutorial', ['ngMaterial'])
   .controller('robot-ctrl', function($scope) {
     function RobotTutorial() {
+      var orientationEnum = {
+        UP: 0,
+        RIGHT: 1,
+        BOTTOM: 2,
+        LEFT: 3
+      };
+      var orientation = orientationEnum.UP;
       var actions = {
-        makeStep: function () {
+        makeStep: function() {
         
         },
         turnRight: function() {
@@ -11,8 +18,18 @@ angular.module('code-tutorial', ['ngMaterial'])
         turnLeft: function() {
         
         },
-        takeApple: function() {
+        takeObject: function() {
         
+        }
+      };
+      var rollbackActions = {
+        makeStep: function() {
+
+        },
+        turnRight: actions.turnLeft,
+        turnLeft: actions.turnRight,
+        takeObject: function() {
+
         }
       };
       var interpretListener;
@@ -20,11 +37,19 @@ angular.module('code-tutorial', ['ngMaterial'])
       var plugin = undefined;
       function execute() {
         for (var i = 0; i < instructions.length; i++) {
-          actions[instructions[i]]();
+          if (!actions[instructions[i]]()) {
+            break;
+          }
+        }
+        for (i--; i >= 0; i--) {
+          rollbackActions[instructions[i]]();
         }
         if (executedListener) {
           executedListener(true);
         }
+      }
+      function alert(message) {
+      
       }
       function buildClientPart(code) {
         return "var robot = {};\n" +
@@ -55,7 +80,8 @@ angular.module('code-tutorial', ['ngMaterial'])
       function addInstruction(action) {
         if (instructions.length >= RobotTutorial.instructionLength) {
           endInterpretation(false);
-          // TODO: popup error;
+          alert("Ooops, too many instructions," +
+            " Robot cannot do them all");
           return;
         }
         instructions.push(action);
@@ -67,6 +93,11 @@ angular.module('code-tutorial', ['ngMaterial'])
           interpretListener(ok);
         }
       }
+      function extractLineAndColumn(stack) {
+        //\sat\s(<?[a-zA-Z$_][$a-zA-Z0-9_]*>?)\s\(.+:([0-9]+:[0-9]+)\)\s
+        // TODO: get readable stack
+        return stack;
+      }
       var elapsedTime;
       var api = {
         __getTime: performance.now,
@@ -75,7 +106,8 @@ angular.module('code-tutorial', ['ngMaterial'])
           instructions.length = 0;
         },
         __handleError: function (obj) {
-          // TODO: popup error
+          alert("You made an error :(", obj.name + ': ' +
+            obj.message + "</br>" + obj.stack);
           endInterpretation(false);
           if (executedListener) {
             executedListener(false);
@@ -95,8 +127,8 @@ angular.module('code-tutorial', ['ngMaterial'])
         turnRight: function() {
           addInstruction('turnRight');
         },
-        takeApple: function() {
-          addInstruction('takeApple');
+        takeObject: function() {
+          addInstruction('takeObject');
         }
       };
       return {
