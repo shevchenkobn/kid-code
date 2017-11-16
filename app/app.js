@@ -1,6 +1,55 @@
-angular.module('code-tutorial', ['ngMaterial'])
+angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
   .controller('robot-ctrl', function($scope) {
-    function RobotTutorial() {
+    function CellInfo(status) {
+      var object = {
+        robot: false,
+        apple: false
+      };
+      Object.defineProperty(object, 'switch', {
+        value: function(status) {
+          for (var prop in this) {
+            if (this.hasOwnProperty(prop)) {
+              this[prop] = false;
+            }
+          }
+          switch (status) {
+            case CellInfo.statusEnum.ROBOT:
+              this.robot = CellInfo.robotPath;
+              break;
+            case CellInfo.statusEnum.APPLE:
+              this.apple = CellInfo.applePath;
+              break;
+          }
+        }
+      });
+      object.switch(status);
+      return object;
+    }
+    CellInfo.statusEnum = {
+      EMPTY: 0,
+      ROBOT: 1,
+      APPLE: 2
+    };
+    CellInfo.robotPath = './app/images/robot.png';
+    CellInfo.applePath = './app/images/apple.svg';
+    function RobotTutorial(tilesArray, size, robot, apples) {
+      function initBoard() {
+        for (var i = 0; i < size * size; i++) {
+          tilesArray[i] = new CellInfo();
+        }
+        getTileAt(robot[0], robot[1]).switch(CellInfo.statusEnum.ROBOT);
+        for (i = 0; i < apples.length; i++) {
+          getTileAt(apples[i][0], apples[i][1]).switch(CellInfo.statusEnum.APPLE);
+        }
+      }
+      initBoard();
+      function getTileAt(row, column) {
+        return tilesArray[row * size + column];
+      }
+      function setTileAt(row, column, value) {
+        return tilesArray[row * size + column] = value;
+      }
+      
       var orientationEnum = {
         UP: 0,
         RIGHT: 1,
@@ -41,6 +90,7 @@ angular.module('code-tutorial', ['ngMaterial'])
             break;
           }
         }
+        debugger;
         for (i--; i >= 0; i--) {
           rollbackActions[instructions[i]]();
         }
@@ -52,7 +102,8 @@ angular.module('code-tutorial', ['ngMaterial'])
       
       }
       function buildClientPart(code) {
-        return "var robot = {};\n" +
+        return "debugger;" +
+          "var robot = {};\n" +
           "        for (var prop in application.remote) {\n" +
           "          if (prop[0] !== '_' && prop[1] !== '_') {\n" +
           "            robot[prop] = application.remote[prop];\n" +
@@ -160,40 +211,19 @@ angular.module('code-tutorial', ['ngMaterial'])
         }
       };
     }
-    function Api() {
-      this.up = function() {console.log('up');};
-      this.down = function() {console.log('down');};
-      this.left = function() {console.log('left');};
-      this.right = function() {console.log('right');};
-      this.error = function(errorObj) {console.error(errorObj);}
+    $scope.run = function() {
+      engine.init(code);
+    };
+    $scope.board = [];
+    var engine = new RobotTutorial($scope.board, 5, [3, 3], [[0, 1], [3, 4], [4, 2], [3, 4]]);
+    $scope.input = "";//application.remote.robot.up(); application.remote.robot.down(); for (var i = 0; i < 5; i++) application.remote.robot.left();";
+    var code = "";
+    function codeChanged(e) {
+      code = e[1].getValue();
     }
-    Api.prepareCode = function(code) {
-      return "try {" + code + "} catch (ex) { application.remote.__handleError(" +
-        "{" +
-        "   name: ex.name, " +
-        "   message: ex.message," +
-        "   stack: ex.stack," +
-        "   lineNumber: ex.lineNumber," +
-        "   columnNumber: ex.columnNumber," +
-        "   fileName: ex.fileName," +
-        "   number: ex.number," +
-        "   description: ex.description" +
-        "}); }"
+    $scope.aceOptions = {
+      onChange: codeChanged,
+      mode: 'javascript',
+      theme: 'katzenmilch'
     };
-    $scope.input = "window();";//application.remote.robot.up(); application.remote.robot.down(); for (var i = 0; i < 5; i++) application.remote.robot.left();";
-    $scope.clickbtn = function(e) {
-      var init = "";//"var robot = application.remote.robot; ";
-      var plugin = new jailed.DynamicPlugin(Api.wrapCode($scope.input), new Api());
-      plugin.whenConnected(function() {
-        console.log(arguments, '+++');
-        plugin.disconnect();
-      });
-      plugin.whenFailed(function() {
-        console.log(arguments, '---');
-      });
-      plugin.whenDisconnected(function() {
-        console.log(arguments, '\\\\\\');
-      });
-    };
-
   });

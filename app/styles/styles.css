@@ -1,0 +1,23 @@
+@font-face {
+    font-family: tiger-grumpy;
+    src: url("../fonts/DK Grumpy Tiger.otf");
+}
+body, html {
+    height: 100%;
+}
+.content {
+    height: 100%;
+}
+.icon.robot {
+    height: 100%;
+}
+.icon.apple {
+    height: 61.7%;
+    width: 61.7%;
+}
+.title {
+    font-size: 4rem !important;
+    font-family: tiger-grumpy;
+    margin: 0 0 0 0.5em !important;
+    letter-spacing: 0.5rem;
+}
