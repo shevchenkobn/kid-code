@@ -1,5 +1,5 @@
 angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
-  .controller('robot-ctrl', function($scope) {
+  .controller('robot-ctrl', function($scope, $interval, $mdMenu) {
     function CellInfo(status) {
       var object = {
         robot: false,
@@ -32,7 +32,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
     };
     CellInfo.robotPath = './app/images/robot.png';
     CellInfo.applePath = './app/images/apple.svg';
-    function RobotTutorial(tilesArray, size, robot, apples) {
+    function RobotTutorial(tilesArray, size, robot, apples, commandsArray) {
+      var currentCoords;
       function initBoard() {
         for (var i = 0; i < size * size; i++) {
           tilesArray[i] = new CellInfo();
@@ -41,6 +42,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
         for (i = 0; i < apples.length; i++) {
           getTileAt(apples[i][0], apples[i][1]).switch(CellInfo.statusEnum.APPLE);
         }
+        currentCoords = robot.slice();
       }
       initBoard();
       function getTileAt(row, column) {
@@ -59,25 +61,72 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       var orientation = orientationEnum.UP;
       var actions = {
         makeStep: function() {
-        
+          var coords = getAccessibleTile("Cannot go out of the board");
+          if (!coords) {
+            return coords;
+          }
+          //TODO: animate
+          getTileAt(currentCoords[0], currentCoords[1]).switch(CellInfo.statusEnum.EMPTY);
+          getTileAt(coords[0], coords[1]).switch(CellInfo.statusEnum.ROBOT);
+          currentCoords = coords;
+          return true;
         },
         turnRight: function() {
-        
+          orientation = (orientation + 1) % 4;
+          //TODO: animate
+          return true;
         },
         turnLeft: function() {
-        
+          orientation = (orientation - 1) % 4;
+          //TODO: animate
+          return true;
         },
-        takeObject: function() {
-        
+        takeApple: function() {
+          var coords = getAccessibleTile("Cannot take apple from out of the board");
+          if (!coords) {
+            return coords;
+          }
+          var tile = getTileAt(coords[0], coords[1]);
+          if (!tile.apple) {
+            alert("There is nothing to take the cell");
+            return false;
+          }
+          //TODO: animate
+          tile.switch(CellInfo.statusEnum.EMPTY);
+          return true;
         }
       };
+      function getAccessibleTile(message) {
+        var coords = currentCoords.slice();
+        switch (orientation) {
+          case orientationEnum.UP:
+            coords[0]--;
+            break;
+          case orientationEnum.RIGHT:
+            coords[1]++;
+            break;
+          case orientationEnum.BOTTOM:
+            coords[0]++;
+            break;
+          case orientationEnum.LEFT:
+            coords[1]--;
+            break;
+        }
+        if (coords[0] < 0 || coords[0] >= size ||
+          coords[1] < 0 || coords[1] >= size)
+        {
+          alert(message);
+          return false;
+        }
+        return coords;
+      }
       var rollbackActions = {
         makeStep: function() {
 
         },
         turnRight: actions.turnLeft,
         turnLeft: actions.turnRight,
-        takeObject: function() {
+        takeApple: function() {
 
         }
       };
@@ -85,33 +134,43 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       var executedListener;
       var plugin = undefined;
       function execute() {
+        commandsArray.length = true;
         for (var i = 0; i < instructions.length; i++) {
-          if (!actions[instructions[i]]()) {
-            break;
-          }
+          commandsArray[i] = {command: instructions[i], executed: false};
         }
-        debugger;
-        for (i--; i >= 0; i--) {
-          rollbackActions[instructions[i]]();
+        i = 0;
+        var interval = $interval(function() {
+          commandsArray[i].executed = true;
+          if (!actions[instructions[i++]]()) {
+            $interval.cancel(interval);
+          }
+        }, RobotTutorial.stepMilisecs, instructions.length);
+        var result = i === instructions.length;
+        if (result) {
+          alert("Congratulations! You have coped with the task!");
+        } else {
+          // for(i--; i >= 0; i--)
+          // {
+          //   rollbackActions[instructions[i]]();
+          // }
         }
         if (executedListener) {
-          executedListener(true);
+          executedListener(result);
         }
       }
       function alert(message) {
-      
+        //TODO: output dialog
       }
       function buildClientPart(code) {
-        return "debugger;" +
-          "var robot = {};\n" +
+        return "var robot = {};\n" +
           "        for (var prop in application.remote) {\n" +
           "          if (prop[0] !== '_' && prop[1] !== '_') {\n" +
           "            robot[prop] = application.remote[prop];\n" +
           "          }\n" +
           "        }\n" +
-          "        application.remote.__finish(application.remote.__getTime());" +
+          "        application.remote.__start(application.remote.__getTime());" +
           code +
-          "application.remote.__start(application.remote.__getTime());";
+          "application.remote.__finish(application.remote.__getTime());";
       }
       function prepareCode(code) {
         return "try {" + buildClientPart(code) + "} catch (ex) { application.remote.__handleError(" +
@@ -127,6 +186,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
           "}); }"
       }
       var instructions = [];
+
       function addInstruction(action) {
         if (instructions.length >= RobotTutorial.instructionLength) {
           endInterpretation(false);
@@ -150,7 +210,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       }
       var elapsedTime;
       var api = {
-        __getTime: performance.now,
+        __getTime: window.performance.now.bind(performance),
         __start: function (nowTime) {
           elapsedTime = nowTime;
           instructions.length = 0;
@@ -177,8 +237,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
         turnRight: function() {
           addInstruction('turnRight');
         },
-        takeObject: function() {
-          addInstruction('takeObject');
+        takeApple: function() {
+          addInstruction('takeApple');
         }
       };
       return {
@@ -209,7 +269,6 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
           if (!listener || typeof listener === 'function' ) {
             interpretListener = listener;
           }
-          execute();
         },
         get onInterpretEnd() {
           return interpretListener;
@@ -217,6 +276,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       };
     }
     RobotTutorial.instructionLength = 500;
+    RobotTutorial.stepMilisecs = 200;
     RobotTutorial.cssRobotRotate = {
       UP: 'robot-up',
       RIGHT: 'robot-right',
@@ -227,14 +287,23 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       engine.init(code);
     };
     $scope.board = [];
-    var engine = new RobotTutorial($scope.board, 5, [3, 3], [[0, 1], [3, 4], [4, 2], [3, 4]]);
     $scope.robotClass = engine.robotClass;
+    $scope.commands = [];
+    var engine = new RobotTutorial($scope.board, 5, [3, 3], [[0, 1], [3, 4], [4, 2], [3, 4]], $scope.commands);
+    engine.onInterpretEnd = function() {
+      $scope.openCommands = true;
+    };
     var code = "";
     function codeChanged(e) {
       code = e[1].getValue();
     }
     $scope.aceOptions = {
       onChange: codeChanged,
+      onLoad: function(editor) {
+        editor.setOptions({
+          fontSize: '1.75rem'
+        });
+      },
       mode: 'javascript',
       theme: 'katzenmilch'
     };

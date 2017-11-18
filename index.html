@@ -11,11 +11,8 @@
         <md-button ng-hide="true" class="md-icon-button">
             <md-icon md-svg-src="./app/images/menu.svg"></md-icon>
         </md-button>
-        <h1 class="title">Kids-Code</h1>
+        <h1 class="title">Kid-Code</h1>
         <span flex></span>
-        <md-button class="md-fab md-hue-1">
-            <md-icon md-svg-src="./app/images/run-code.svg"></md-icon>
-        </md-button>
     </div>
 </md-toolbar>
 <div class="content" layout="row" flex>
@@ -32,15 +29,35 @@
         </md-grid-tile>
     </md-grid-list>
 </md-content>
-<md-content flex-gt-sm="65" flex-sm="50" flex-xs="100" layout-margin layout="column">
-    <div ui-ace="aceOptions" class="content" layout-margin md-whiteframe="4"></div>
-    <div layout-padding>
-        <span flex></span>
-        <md-button ng-click="run()">Run</md-button>
-    </div>
-</md-content>
+<div flex-gt-sm="65" flex-sm="50" flex-xs="100" layout="row" class="content">
+    <md-sidenav md-component-id="left" class="md-sidenav-left md-whiteframe-z2"
+                md-is-locked-open="openCommands">
+        <md-toolbar md-colors="{background: 'primary-200'}">
+            <h1 class="md-toolbar-tools">Commands</h1>
+        </md-toolbar>
+        <md-list>
+            <md-list-item ng-repeat="command in commands track by $index">
+            <span class="md-title"
+                  md-colors="command.executed ? {background: 'accent-800'} : {background: 'background'}">
+                {{command.command}}
+            </span>
+            </md-list-item>
+        </md-list>
+    </md-sidenav>
+    <md-content layout-margin layout-fill layout="column">
+        <div class="content" layout-margin md-whiteframe="4">
+            <div ui-ace="aceOptions" layout-fill></div>
+            <md-button class="md-fab md-hue-2 md-fab-bottom-right" ng-click="run()">
+                <md-icon md-svg-src="./app/images/run-code.svg"></md-icon>
+            </md-button>
+        </div>
+        <!--<div layout-padding>-->
+        <!--<span flex></span>-->
+        <!--<md-button ng-click="run()">Run</md-button>-->
+        <!--</div>-->
+    </md-content>
+
 </div>
-<div md-whiteframe="5">
 </div>
 <!--<md-toolbar>-->
     <!--<div class="md-toolbar-tools">-->
