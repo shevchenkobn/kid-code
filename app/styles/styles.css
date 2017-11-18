@@ -21,6 +21,10 @@ body, html {
 .icon.robot {
     height: 100%;
 }
+.icon.apple {
+    height: 61.7%;
+    width: 61.7%;
+}
 .robot-up {
     transform: rotate(0deg);
     -o-transform: rotate(0deg);
@@ -44,8 +48,4 @@ body, html {
     -o-transform: rotate(270deg);
     -webkit-transform: rotate(270deg);
     -moz-transform: rotate(270deg);
-}
-.icon.apple {
-    height: 61.7%;
-    width: 61.7%;
 }

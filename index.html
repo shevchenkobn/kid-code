@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="./app/styles/styles.css">
 </head>
 <body ng-app="code-tutorial" layout-fill ng-controller="robot-ctrl" layout="column">
+<md-button class="md-fab md-hue-2 md-fab-bottom-right" ng-click="run()">
+    <md-icon md-svg-src="./app/images/run-code.svg"></md-icon>
+</md-button>
 <md-toolbar class="md-medium-tall" md-whiteframe="6">
     <div layout="row" layout-align="bottom center">
         <md-button ng-hide="true" class="md-icon-button">
@@ -23,41 +26,36 @@
                 class="md-accent"
                 ng-repeat="cell in board track by $index"
                 md-whiteframe="4">
-            <img class="icon robot" ng-show="cell.robot" src="{{cell.robot ? cell.robot : ''}}">
-            <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}" ng-class=""
+            <img class="icon robot" ng-show="cell.robot" src="{{cell.robot ? cell.robot : ''}}"
+                 ng-class="robotClass">
+            <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}"
                      class="icon apple"></md-icon>
         </md-grid-tile>
     </md-grid-list>
 </md-content>
-<div flex-gt-sm="65" flex-sm="50" flex-xs="100" layout="row" class="content">
-    <md-sidenav md-component-id="left" class="md-sidenav-left md-whiteframe-z2"
-                md-is-locked-open="openCommands">
-        <md-toolbar md-colors="{background: 'primary-200'}">
-            <h1 class="md-toolbar-tools">Commands</h1>
-        </md-toolbar>
-        <md-list>
-            <md-list-item ng-repeat="command in commands track by $index">
-            <span class="md-title"
-                  md-colors="command.executed ? {background: 'accent-800'} : {background: 'background'}">
-                {{command.command}}
-            </span>
-            </md-list-item>
-        </md-list>
-    </md-sidenav>
-    <md-content layout-margin layout-fill layout="column">
-        <div class="content" layout-margin md-whiteframe="4">
-            <div ui-ace="aceOptions" layout-fill></div>
-            <md-button class="md-fab md-hue-2 md-fab-bottom-right" ng-click="run()">
-                <md-icon md-svg-src="./app/images/run-code.svg"></md-icon>
-            </md-button>
-        </div>
-        <!--<div layout-padding>-->
-        <!--<span flex></span>-->
-        <!--<md-button ng-click="run()">Run</md-button>-->
-        <!--</div>-->
-    </md-content>
-
-</div>
+<md-sidenav md-component-id="{{commandsId}}" class="md-sidenav-left md-whiteframe-z2"
+            md-is-locked-open="openCommands">
+    <md-toolbar md-colors="{background: 'primary-200'}">
+        <h1 class="md-toolbar-tools">Commands</h1>
+    </md-toolbar>
+    <md-list>
+        <md-list-item ng-repeat="command in commands track by $index"
+                      md-colors="command.executed ? {background: 'accent-700'} : {background: 'background'}">
+        <span class="md-title">
+            {{command.command}}
+        </span>
+        </md-list-item>
+    </md-list>
+</md-sidenav>
+<md-content flex-gt-sm="65" flex-sm="50" flex-xs="100" class="content" layout-margin layout-fill layout="column">
+    <div class="content" layout-margin md-whiteframe="4">
+        <div ui-ace="aceOptions" layout-fill></div>
+    </div>
+    <!--<div layout-padding>-->
+    <!--<span flex></span>-->
+    <!--<md-button ng-click="run()">Run</md-button>-->
+    <!--</div>-->
+</md-content>
 </div>
 <!--<md-toolbar>-->
     <!--<div class="md-toolbar-tools">-->
