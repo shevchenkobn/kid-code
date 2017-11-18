@@ -1,0 +1,80 @@
+$animation-duration: 500ms;
+
+@font-face {
+    font-family: tiger-grumpy;
+    src: url("../fonts/DK Grumpy Tiger.otf");
+}
+.title {
+    font-size: 4rem !important;
+    font-family: tiger-grumpy;
+    margin: 0 0 0 0.5em !important;
+    letter-spacing: 0.5rem;
+}
+body, html {
+    height: 100%;
+}
+.content {
+    height: 100%;
+}
+.content-75 {
+    height: 75%;
+    position: relative !important;
+}
+.icon.robot {
+    height: 100%;
+}
+.icon.apple {
+    height: 61.7%;
+    width: 61.7%;
+}
+/* Robot turning animation */
+@mixin robot-rotate($deg) {
+  transform: rotate($deg);
+  -o-transform: rotate($deg);
+  -webkit-transform: rotate($deg);
+  -moz-transform: rotate($deg);
+  -ms-transform: rotate($deg);
+}
+@mixin robot-animate() {
+  .active {
+    transition: all $animation-duration ease-in;
+    -o-transition: all $animation-duration ease-in;
+    -webkit-transition: all $animation-duration ease-in;
+    -moz-transition: all $animation-duration ease-in;
+  }
+}
+@mixin robot-animate-init() {
+  //.enter, .enter-active{
+    //.left, .right {
+      @include robot-animate();
+    //}
+  //}
+}
+@mixin robot-animate-proceed($deg) {
+  .leave, .leave-active {
+    .left {
+      @include robot-rotate(abs($deg - 90deg));
+    }
+    .right {
+      @include robot-rotate($deg + 90deg);
+    }
+  }
+}
+@mixin robot-init($deg) {
+  @include robot-rotate($deg);
+  @include robot-animate-init();
+  @include robot-animate-proceed($deg);
+}
+.robot-up {
+  @include robot-init(0deg);
+}
+.robot-right {
+  @include robot-init(90deg);
+}
+.robot-bottom {
+  @include robot-init(180deg);
+}
+.robot-left {
+  @include robot-init(270deg);
+}
+/* Robot turning animation end */

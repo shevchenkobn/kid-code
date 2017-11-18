@@ -1,0 +1,126 @@
+@font-face {
+  font-family: tiger-grumpy;
+  src: url("../fonts/DK Grumpy Tiger.otf"); }
+.title {
+  font-size: 4rem !important;
+  font-family: tiger-grumpy;
+  margin: 0 0 0 0.5em !important;
+  letter-spacing: 0.5rem; }
+
+body, html {
+  height: 100%; }
+
+.content {
+  height: 100%; }
+
+.content-75 {
+  height: 75%;
+  position: relative !important; }
+
+.icon.robot {
+  height: 100%; }
+
+.icon.apple {
+  height: 61.7%;
+  width: 61.7%; }
+
+/* Robot turning animation */
+.robot-up {
+  transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg); }
+  .robot-up .active {
+    transition: all 500ms ease-in;
+    -o-transition: all 500ms ease-in;
+    -webkit-transition: all 500ms ease-in;
+    -moz-transition: all 500ms ease-in; }
+  .robot-up .leave .left, .robot-up .leave-active .left {
+    transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg); }
+  .robot-up .leave .right, .robot-up .leave-active .right {
+    transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg); }
+
+.robot-right {
+  transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg); }
+  .robot-right .active {
+    transition: all 500ms ease-in;
+    -o-transition: all 500ms ease-in;
+    -webkit-transition: all 500ms ease-in;
+    -moz-transition: all 500ms ease-in; }
+  .robot-right .leave .left, .robot-right .leave-active .left {
+    transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg); }
+  .robot-right .leave .right, .robot-right .leave-active .right {
+    transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg); }
+
+.robot-bottom {
+  transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg); }
+  .robot-bottom .active {
+    transition: all 500ms ease-in;
+    -o-transition: all 500ms ease-in;
+    -webkit-transition: all 500ms ease-in;
+    -moz-transition: all 500ms ease-in; }
+  .robot-bottom .leave .left, .robot-bottom .leave-active .left {
+    transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg); }
+  .robot-bottom .leave .right, .robot-bottom .leave-active .right {
+    transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg); }
+
+.robot-left {
+  transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg); }
+  .robot-left .active {
+    transition: all 500ms ease-in;
+    -o-transition: all 500ms ease-in;
+    -webkit-transition: all 500ms ease-in;
+    -moz-transition: all 500ms ease-in; }
+  .robot-left .leave .left, .robot-left .leave-active .left {
+    transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg); }
+  .robot-left .leave .right, .robot-left .leave-active .right {
+    transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg); }
+
+/* Robot turning animation end */
+
+/*# sourceMappingURL=styles.css.map */
