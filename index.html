@@ -27,7 +27,8 @@
                 ng-repeat="cell in board track by $index"
                 md-whiteframe="4">
             <img class="icon robot" ng-show="cell.robot" src="{{cell.robot ? cell.robot : ''}}">
-            <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}" class="icon apple"></md-icon>
+            <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}" ng-class=""
+                     class="icon apple"></md-icon>
         </md-grid-tile>
     </md-grid-list>
 </md-content>

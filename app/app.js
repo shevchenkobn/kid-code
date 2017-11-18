@@ -127,7 +127,6 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
           "}); }"
       }
       var instructions = [];
-      RobotTutorial.instructionLength = 500;
       function addInstruction(action) {
         if (instructions.length >= RobotTutorial.instructionLength) {
           endInterpretation(false);
@@ -183,6 +182,12 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
         }
       };
       return {
+        get robotOrientation() {
+          return orientation;
+        },
+        get robotClass() {
+          return RobotTutorial.cssRobotRotate[orientation];
+        },
         get api() {
           return api;
         },
@@ -211,12 +216,19 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
         }
       };
     }
+    RobotTutorial.instructionLength = 500;
+    RobotTutorial.cssRobotRotate = {
+      UP: 'robot-up',
+      RIGHT: 'robot-right',
+      BOTTOM: 'robot-bottom',
+      LEFT: 'robot-left'
+    };
     $scope.run = function() {
       engine.init(code);
     };
     $scope.board = [];
     var engine = new RobotTutorial($scope.board, 5, [3, 3], [[0, 1], [3, 4], [4, 2], [3, 4]]);
-    $scope.input = "";//application.remote.robot.up(); application.remote.robot.down(); for (var i = 0; i < 5; i++) application.remote.robot.left();";
+    $scope.robotClass = engine.robotClass;
     var code = "";
     function codeChanged(e) {
       code = e[1].getValue();
