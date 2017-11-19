@@ -61,6 +61,16 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       var orientation = orientationEnum.UP;
       var orientationChangedListener = false;
       function changeOrientation(newOrientation) {
+        var direction = 0;
+        if (newOrientation === 0 && orientation === 3) {
+          direction = 1;
+        } else if (newOrientation === 3 && orientation === 0) {
+          direction = -1;
+        } else if (newOrientation > orientation) {
+          direction = 1;
+        } else if (newOrientation < orientation) {
+          direction = -1;
+        }
         orientation = newOrientation;
         if (orientationChangedListener) {
           var orient;
@@ -71,8 +81,47 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
               break;
             }
           }
-          console.log(RobotTutorial.cssRobotRotate[orient]);
-          orientationChangedListener(RobotTutorial.cssRobotRotate[orient]);
+          orient =
+            RobotTutorial.cssRobotRotate[orient];
+          orientationChangedListener(RobotTutorial.genaralRobotClass +
+            ' ' + orient,
+            size * currentCoords[0] + currentCoords[1],
+            function(elements) {
+              if (!direction) {
+                return;
+              }
+              elements = $(elements);
+              var oldDegree = elements.css("-webkit-transform") ||
+                elements.css("-moz-transform")    ||
+                elements.css("-ms-transform")     ||
+                elements.css("-o-transform")      ||
+                elements.css("transform");
+              oldDegree = parseInt(oldDegree.match(/-?[0-9]+deg/) ||
+                elements[0].style.transform.match(/-?[0-9]+deg/)) || 0;
+              if (direction > 0) {
+                var newDegree = oldDegree + 90;
+              } else {
+                newDegree = oldDegree - 90;
+              }
+              $({deg: oldDegree}).animate({deg: newDegree}, {
+                duration: RobotTutorial.stepMilisecs,
+                step: function(now) {
+                  elements.css({
+                    transform: 'rotate(' + now + 'deg)'
+                  });
+                }
+              });
+              // element.animate({
+              //     transform: 'rotate(' + newDegree + 'deg)'
+              //   },
+              //   {
+              //     duration: RobotTutorial.stepMilisecs,
+              //     step: function(now, fx) {
+              //       debugger;
+              //     }
+              //   }
+              // );
+            });
         }
       }
       var actions = {
@@ -93,8 +142,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
           return true;
         },
         turnLeft: function() {
-          var newOrientation = (orientation - 1) % 4;
-          changeOrientation(newOrientation >= 0 ? newOrientation : newOrientation + 4);
+          changeOrientation((orientation - 1 + 4) % 4);
           //TODO: animate
           return true;
         },
@@ -137,16 +185,16 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
         }
         return coords;
       }
-      var rollbackActions = {
-        makeStep: function() {
-
-        },
-        turnRight: actions.turnLeft,
-        turnLeft: actions.turnRight,
-        takeApple: function() {
-
-        }
-      };
+      // var rollbackActions = {
+      //   makeStep: function() {
+      //
+      //   },
+      //   turnRight: actions.turnLeft,
+      //   turnLeft: actions.turnRight,
+      //   takeApple: function() {
+      //
+      //   }
+      // };
       var interpretListener;
       var executedListener;
       var plugin = undefined;
@@ -301,10 +349,17 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
     RobotTutorial.instructionLength = 500;
     RobotTutorial.stepMilisecs = 500;
     RobotTutorial.cssRobotRotate = {
-      UP: 'robot-up',
-      RIGHT: 'robot-right',
-      BOTTOM: 'robot-bottom',
-      LEFT: 'robot-left'
+      UP: 'up',
+      RIGHT: 'right',
+      BOTTOM: 'bottom',
+      LEFT: 'left'
+    };
+    RobotTutorial.genaralRobotClass = 'robot';
+    RobotTutorial.animationClasses = {
+      FromLeft: 'from-left',
+      FromRight: 'from-right',
+      EnterStart: 'enter',
+      EnterFinish: 'enter-active'
     };
     $scope.run = function() {
       engine.init(code);
@@ -312,8 +367,9 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
     $scope.board = [];
     $scope.commands = [];
     var engine = new RobotTutorial($scope.board, 5, [3, 3], [[0, 1], [3, 4], [4, 2], [3, 4]], $scope.commands);
-    engine.onRobotOrientationChange = function(newClass) {
+    engine.onRobotOrientationChange = function(newClass, childnumber, callback) {
       $scope.robotClass = newClass;
+      callback($('.robot-cell .robot'));
     };
     $scope.commandsId = 'commands';
     engine.onInterpretEnd = function(ok, execute) {

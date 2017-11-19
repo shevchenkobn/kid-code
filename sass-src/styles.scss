@@ -35,46 +35,26 @@ body, html {
   -moz-transform: rotate($deg);
   -ms-transform: rotate($deg);
 }
-@mixin robot-animate() {
-  .active {
-    transition: all $animation-duration ease-in;
-    -o-transition: all $animation-duration ease-in;
-    -webkit-transition: all $animation-duration ease-in;
-    -moz-transition: all $animation-duration ease-in;
-  }
+.robot {
+  //transition: all $animation-duration ease-in-out;
+  //-o-transition: all $animation-duration ease-in-out;
+  //-webkit-transition: all $animation-duration ease-in-out;
+  //-moz-transition: all $animation-duration ease-in-out;
 }
-@mixin robot-animate-init() {
-  //.enter, .enter-active{
-    //.left, .right {
-      @include robot-animate();
-    //}
-  //}
+.up {
+  @extend .robot;
+  @include robot-rotate(0deg);
 }
-@mixin robot-animate-proceed($deg) {
-  .leave, .leave-active {
-    .left {
-      @include robot-rotate(abs($deg - 90deg));
-    }
-    .right {
-      @include robot-rotate($deg + 90deg);
-    }
-  }
+.right {
+  @extend .robot;
+  //@include robot-rotate(90deg);
 }
-@mixin robot-init($deg) {
-  @include robot-rotate($deg);
-  @include robot-animate-init();
-  @include robot-animate-proceed($deg);
+.bottom {
+  @extend .robot;
+  //@include robot-rotate(180deg);
 }
-.robot-up {
-  @include robot-init(0deg);
-}
-.robot-right {
-  @include robot-init(90deg);
-}
-.robot-bottom {
-  @include robot-init(180deg);
-}
-.robot-left {
-  @include robot-init(270deg);
+.left {
+  @extend .robot;
+  //@include robot-rotate(270deg);
 }
 /* Robot turning animation end */

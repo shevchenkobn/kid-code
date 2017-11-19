@@ -1,0 +1,37 @@
+@font-face {
+  font-family: tiger-grumpy;
+  src: url("../fonts/DK Grumpy Tiger.otf"); }
+.title {
+  font-size: 4rem !important;
+  font-family: tiger-grumpy;
+  margin: 0 0 0 0.5em !important;
+  letter-spacing: 0.5rem; }
+
+body, html {
+  height: 100%; }
+
+.content {
+  height: 100%; }
+
+.content-75 {
+  height: 75%;
+  position: relative !important; }
+
+.icon.robot, .icon.up, .icon.right, .icon.bottom, .icon.left {
+  height: 100%; }
+
+.icon.apple {
+  height: 61.7%;
+  width: 61.7%; }
+
+/* Robot turning animation */
+.up {
+  transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg); }
+
+/* Robot turning animation end */
+
+/*# sourceMappingURL=styles.css.map */
