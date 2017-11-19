@@ -27,34 +27,48 @@ body, html {
     height: 61.7%;
     width: 61.7%;
 }
+
+@mixin transition($config) {
+  transition: $config;
+  -o-transition: $config;
+  -webkit-transition: $config;
+  -moz-transition: $config;
+}
 /* Robot turning animation */
-@mixin robot-rotate($deg) {
-  transform: rotate($deg);
-  -o-transform: rotate($deg);
-  -webkit-transform: rotate($deg);
-  -moz-transform: rotate($deg);
-  -ms-transform: rotate($deg);
-}
 .robot {
-  //transition: all $animation-duration ease-in-out;
-  //-o-transition: all $animation-duration ease-in-out;
-  //-webkit-transition: all $animation-duration ease-in-out;
-  //-moz-transition: all $animation-duration ease-in-out;
+  @include transition(all $animation-duration ease-in-out);
 }
-.up {
+@mixin transform($config) {
+  transform: $config;
+  -o-transform: $config;
+  -webkit-transform: $config;
+  -moz-transform: $config;
+  -ms-transform: $config;
+}
+@mixin rotate($deg) {
+  @include transform(rotate($deg));
+}
+/* Robot turning animation end
+Robot move animation*/
+.robot.ng-hide-remove {
+  @include transition(all $animation-duration ease-in);
+}
+.robot.ng-hide-remove-active {
   @extend .robot;
-  @include robot-rotate(0deg);
+  @include transform(translate(0, 0));
 }
-.right {
-  @extend .robot;
-  //@include robot-rotate(90deg);
-}
-.bottom {
-  @extend .robot;
-  //@include robot-rotate(180deg);
-}
-.left {
-  @extend .robot;
-  //@include robot-rotate(270deg);
-}
-/* Robot turning animation end */
+//.up.enter-active {
+//  @extend .robot;
+//}
+//.right.enter-active {
+//  @extend .robot;
+//  //@include robot-rotate(90deg);
+//}
+//.bottom.enter-active {
+//  @extend .robot;
+//  //@include robot-rotate(180deg);
+//}
+//.left.enter-active {
+//  @extend .robot;
+//  //@include robot-rotate(270deg);
+//}
