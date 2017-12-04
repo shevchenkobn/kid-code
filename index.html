@@ -20,14 +20,15 @@
 </md-toolbar>
 <div class="content" layout="row" flex>
 <md-content flex-gt-sm="35" flex-sm="50" flex-xs="100" ng-hide="$mdMedia('sm')" layout-padding md-whiteframe="5">
-    <md-grid-list id="board" md-cols="5" md-gutter="2%" md-row-height="1:1">
+    <md-grid-list id="board" md-cols="5" md-gutter="2%" md-row-height="1:1" style="position: relative">
         <md-grid-tile
                 md-colors="{background: 'accent-600-.50'}"
                 class="md-accent robot-cell"
                 ng-repeat="cell in board track by $index"
                 md-whiteframe="4">
-            <img class="icon robot" ng-show="cell.robot" src="{{cell.robot ? cell.robot : ''}}"
-                 ng-class="robotClass">
+            <img class="icon robot" ng-show="cell.robot" src="{{cell.robot ? cell.robot : cell.empty}}"
+                 ng-class="robotClass"
+                 style="position: relative; z-index: 999">
             <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}"
                      class="icon apple"></md-icon>
         </md-grid-tile>
@@ -63,6 +64,7 @@
     <!--</div>-->
 <!--</md-toolbar>-->
 <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+<script src="./node_modules/jquery.transit/jquery.transit.js"></script>
 <script src="./node_modules/angular/angular.min.js"></script>
 <script src="./node_modules/angular-animate/angular-animate.min.js"></script>
 <script src="./node_modules/angular-aria/angular-aria.min.js"></script>

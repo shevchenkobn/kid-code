@@ -1,0 +1,49 @@
+@font-face {
+  font-family: tiger-grumpy;
+  src: url("../fonts/DK Grumpy Tiger.otf"); }
+.title {
+  font-size: 4rem !important;
+  font-family: tiger-grumpy;
+  margin: 0 0 0 0.5em !important;
+  letter-spacing: 0.5rem; }
+
+body, html {
+  height: 100%; }
+
+.content {
+  height: 100%; }
+
+.content-75 {
+  height: 75%;
+  position: relative !important; }
+
+.icon.robot {
+  height: 100%; }
+
+.icon.apple {
+  height: 61.7%;
+  width: 61.7%; }
+
+/* Robot turning animation */
+.robot, .robot.ng-hide-remove-active {
+  transition: all 350ms ease-in-out;
+  -o-transition: all 350ms ease-in-out;
+  -webkit-transition: all 350ms ease-in-out;
+  -moz-transition: all 350ms ease-in-out; }
+
+/* Robot turning animation end
+Robot move animation*/
+.robot.ng-hide-remove {
+  transition: all 350ms ease-in;
+  -o-transition: all 350ms ease-in;
+  -webkit-transition: all 350ms ease-in;
+  -moz-transition: all 350ms ease-in; }
+
+.robot.ng-hide-remove-active {
+  transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  -webkit-transform: translate(0, 0);
+  -moz-transform: translate(0, 0);
+  -ms-transform: translate(0, 0); }
+
+/*# sourceMappingURL=styles.css.map */

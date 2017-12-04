@@ -3,7 +3,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
     function CellInfo(status) {
       var object = {
         robot: false,
-        apple: false
+        apple: false,
+        empty: false
       };
       Object.defineProperty(object, 'switch', {
         value: function(status) {
@@ -19,6 +20,9 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
             case CellInfo.statusEnum.APPLE:
               this.apple = CellInfo.applePath;
               break;
+            case CellInfo.statusEnum.EMPTY:
+              this.empty = CellInfo.stubPngPath;
+              break;
           }
         }
       });
@@ -32,6 +36,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
     };
     CellInfo.robotPath = './app/images/robot.png';
     CellInfo.applePath = './app/images/apple.svg';
+    CellInfo.stubPngPath = './app/images/stub.png';
     function RobotTutorial(tilesArray, size, robot, apples, commandsArray) {
       var currentCoords;
       function initBoard() {
@@ -61,7 +66,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       RobotTutorial.orientation = orientationEnum;
       var orientation = orientationEnum.UP;
       var orientationChangedListener = false;
-      var positionChangedListener = false;
+      var robotMovedListener = false;
       function changeOrientation(newOrientation) {
         var direction = 0;
         if (newOrientation === 0 && orientation === 3) {
@@ -104,16 +109,21 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
             alert('Can\'t go to apple');
             return false;
           }
-          var finishAnimation;
-          getTileAt(currentCoords[0], currentCoords[1]).switch(CellInfo.statusEnum.EMPTY);
-          if (positionChangedListener) {
-            positionChangedListener(orientation, function(callback) {
-              finishAnimation = callback;
+          var oldCell = getTileAt(currentCoords[0], currentCoords[1]);
+          if (robotMovedListener) {
+            robotMovedListener(orientation, function(callback) {
+              execute.finishAction = function() {
+                oldCell.switch(CellInfo.statusEnum.EMPTY);
+                callback();
+                newCell.switch(CellInfo.statusEnum.ROBOT);
+              }
             });
-          }
-          newCell.switch(CellInfo.statusEnum.ROBOT);
-          if (finishAnimation) {
-            finishAnimation();
+            if (!execute.finishAction) {
+              oldCell.switch(CellInfo.statusEnum.EMPTY);
+              newCell.switch(CellInfo.statusEnum.ROBOT);
+            }
+          } else {
+            newCell.switch(CellInfo.statusEnum.ROBOT);
           }
           currentCoords = coords;
           return true;
@@ -188,20 +198,34 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
           i = 0;
           var interval = $interval(function() {
             commandsArray[i].executed = true;
-            if (!actions[instructions[i++]]()) {
+            if (execute.finishAction) {
+              execute.finishAction();
+            }
+            delete execute.finishAction;
+            var result = actions[instructions[i]]();
+            if (result !== true) {
               $interval.cancel(interval);
+              finishExecution(false, result);
+            }
+            i++;
+            if (i === instructions.length) {
+              if (execute.finishAction) {
+                $timeout(function() {
+                  execute.finishAction();
+                  delete execute.finishAction;
+                  finishExecution(true, "Congratulations! You have coped with the task!");
+                }, RobotTutorial.stepMilisecs);
+              } else {
+                finishExecution(true, "Congratulations! You have coped with the task!");
+              }
             }
           }, RobotTutorial.stepMilisecs, instructions.length);
-          result = i === instructions.length;
-          if (result) {
-            alert("Congratulations! You have coped with the task!");
-          } else {
-            // for(i--; i >= 0; i--)
-            // {
-            //   rollbackActions[instructions[i]]();
-            // }
-          }
+        } else if (executedListener) {
+          executedListener(result);
         }
+      }
+      function finishExecution(result, msg) {
+        alert(msg);
         if (executedListener) {
           executedListener(result);
         }
@@ -300,11 +324,11 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
           }
         },
         get onRobotMove() {
-          return positionChangedListener;
+          return robotMovedListener;
         },
         set onRobotMove(listener) {
           if (!listener || typeof listener === 'function') {
-            positionChangedListener = listener;
+            robotMovedListener = listener;
           }
         },
         get onRobotOrientationChange() {
@@ -357,27 +381,28 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
     $scope.board = [];
     $scope.commands = [];
     var engine = new RobotTutorial($scope.board, 5, [3, 3], [[0, 1], [3, 4], [4, 2], [3, 4]], $scope.commands);
-    engine.onRobotOrientationChange = function(newClass, direction, childnumber) {
-      $scope.robotClass = newClass;
-      var cells = $('.robot-cell .robot');
-      if (!direction) {
-        return;
-      }
-      var oldDegree = cells.css("-webkit-transform") ||
-        cells.css("-moz-transform")    ||
-        cells.css("-ms-transform")     ||
-        cells.css("-o-transform")      ||
-        cells.css("transform");
-      oldDegree = parseInt(oldDegree.match(/-?[0-9]+deg/) ||
-        cells[0].style.transform.match(/-?[0-9]+deg/)) || 0;
-      if (direction > 0) {
-        var newDegree = oldDegree + 90;
-      } else {
-        newDegree = oldDegree - 90;
-      }
-      cells.css({
-        transform: 'rotate(' + newDegree + 'deg)'
-      });
+    engine.onRobotOrientationChange = function(newClass, direction) {
+      $('.robot-cell .robot').css({ rotate: (direction < 0 ? '-' : '+') + '=90' });
+      // $scope.robotClass = newClass;
+      // var cells = $('.robot-cell .robot');
+      // if (!direction) {
+      //   return;
+      // }
+      // var oldDegree = cells.css("-webkit-transform") ||
+      //   cells.css("-moz-transform")    ||
+      //   cells.css("-ms-transform")     ||
+      //   cells.css("-o-transform")      ||
+      //   cells.css("transform");
+      // oldDegree = parseInt(oldDegree.match(/-?[0-9]+deg/) ||
+      //   cells[0].style.transform.match(/-?[0-9]+deg/)) || 0;
+      // if (direction > 0) {
+      //   var newDegree = oldDegree + 90;
+      // } else {
+      //   newDegree = oldDegree - 90;
+      // }
+      // cells.css({
+      //   transform: 'rotate(' + newDegree + 'deg)'
+      // });
       // if artifact appears use solution below instead of cells.css + transition
   
       // $({deg: oldDegree}).animate({deg: newDegree}, {
@@ -390,43 +415,57 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       // });
     };
     engine.onRobotMove = function(orientation, finishAnimation) {
-      debugger;
-      var cells = $('.robot-cell .robot');
-      var cellsContainer = $('.robot-cell').parent();
+      var cells = $('.robot-cell');
+      var robots = cells.find('.robot');
+      var cellsContainer = cells.parent();
       var width = parseFloat(cells.css('width')) +
-        convertToPx(cellsContainer.attr('md-gutter'), cellsContainer.css('width'), cells) + 'px';
+        convertToPx(cellsContainer.attr('md-gutter'), cellsContainer.css('width'), cells);
       var height = parseFloat(cells.css('height')) +
-        convertToPx(cellsContainer.attr('md-gutter'), cellsContainer.css('height'), cells) + 'px';
-      var translate;
-      switch (orientation) {
-        case RobotTutorial.orientation.UP:
-          translate = '0, ' + height;
-          break;
-        case RobotTutorial.orientation.RIGHT:
-          translate = '-' + width + ', 0';
-          break;
-        case RobotTutorial.orientation.BOTTOM:
-          translate = '0, -' + height;
-          break;
-        case RobotTutorial.orientation.LEFT:
-          translate = width + ', 0';
-          break;
-      }
-      cells.css({
-        transform: '+=,translate(' + translate + ')',
-        transition: 'all ' + RobotTutorial.stepMilisecs + ' ease-in'
-      });
+        convertToPx(cellsContainer.attr('md-gutter'), cellsContainer.css('height'), cells);
+      var options = {
+        easing: 'in-out',
+        duration: RobotTutorial.stepMilisecs,
+        y: -height
+      };
+      // switch (orientation) {
+      //   case RobotTutorial.orientation.UP:
+      //     options.y = -height;
+      //     break;
+      //   case RobotTutorial.orientation.RIGHT:
+      //     options.x = width;
+      //     break;
+      //   case RobotTutorial.orientation.BOTTOM:
+      //     options.y = height;
+      //     break;
+      //   case RobotTutorial.orientation.LEFT:
+      //     options.x = -width;
+      //     break;
+      // }
+      robots.transition(options);
       finishAnimation(function() {
-        var transform = cells.css('transform').replace(/translate\(-?[0-9]px[,\s*-?[0-9]px]\)/);
-        cells.css({
-          transform: transform
+        robots.css({
+          translate: '0,0'
         });
       });
+      // debugger;
+      //
+      // var transform = robots.css('transform');
+      // if (transform === 'none') {
+      //   transform = translate;
+      // } else {
+      //   transform += ', ' + translate;
+      // }
+      // finishAnimation(function() {
+      //   // var transform = robots.css('transform').replace(/translate\(-?[0-9]px[,\s*-?[0-9]px]\)/, '');
+      //   // robots.css({
+      //   //   transform: transform
+      //   // });
+      // });
     };
     ///!!!! basis must be a number
     function convertToPx(value, basis, element) {
       basis = parseFloat(basis);
-      var units = value.match(/[%a-zA-Z]+$/);
+      var units = value.match(/[%a-zA-Z]+$/)[0];
       value = parseFloat(value);
       switch (units) {
         case '%':
@@ -474,16 +513,18 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       theme: 'katzenmilch'
     };
   });
-// robot.turnRight();
-// robot.takeApple();
-// robot.turnRight();
-// robot.makeStep();
-// robot.turnRight();
-// robot.takeApple();
-// robot.makeStep();
-// robot.turnRight();
-// for (var i = 0; i < 4; i++) {
-//   robot.makeStep();
-// }
-// robot.turnLeft();
-// robot.takeApple();
+/*
+robot.turnRight();
+robot.takeApple();
+robot.turnRight();
+robot.makeStep();
+robot.turnRight();
+robot.takeApple();
+robot.makeStep();
+robot.turnRight();
+for (var i = 0; i < 4; i++) {
+  robot.makeStep();
+}
+robot.turnLeft();
+robot.takeApple();
+*/
