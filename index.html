@@ -30,7 +30,9 @@
                  ng-class="robotClass"
                  style="position: relative; z-index: 999">
             <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}"
-                     class="icon apple"></md-icon>
+                     class="icon apple up-robot"
+                     ng-animate="'apple'"
+                     style="position: relative; z-index: 999"></md-icon>
         </md-grid-tile>
     </md-grid-list>
 </md-content>

@@ -1,4 +1,4 @@
-angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
+angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
   .controller('robot-ctrl', function($scope, $interval, $mdSidenav, $timeout) {
     function CellInfo(status) {
       var object = {
@@ -362,7 +362,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       };
     }
     RobotTutorial.instructionLength = 500;
-    RobotTutorial.stepMilisecs = 500;
+    RobotTutorial.animationLength = 500;
+    RobotTutorial.stepMilisecs = 700;
     RobotTutorial.cssRobotRotate = {
       UP: 'up',
       RIGHT: 'right',
@@ -422,11 +423,11 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
         convertToPx(cellsContainer.attr('md-gutter'), cellsContainer.css('width'), cells);
       var height = parseFloat(cells.css('height')) +
         convertToPx(cellsContainer.attr('md-gutter'), cellsContainer.css('height'), cells);
-      var options = {
-        easing: 'in-out',
-        duration: RobotTutorial.stepMilisecs,
-        y: -height
-      };
+      // var options = {
+      //   easing: 'in-out',
+      //   duration: RobotTutorial.animationLength,
+      //   y: -height
+      // };
       // switch (orientation) {
       //   case RobotTutorial.orientation.UP:
       //     options.y = -height;
@@ -441,7 +442,10 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace'])
       //     options.x = -width;
       //     break;
       // }
-      robots.transition(options);
+      // robots.transition(options);
+      robots.css({
+        translate: '0,' + -height
+      });
       finishAnimation(function() {
         robots.css({
           translate: '0,0'

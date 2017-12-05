@@ -25,25 +25,41 @@ body, html {
   width: 61.7%; }
 
 /* Robot turning animation */
-.robot, .robot.ng-hide-remove-active {
-  transition: all 500ms ease-in-out;
-  -o-transition: all 500ms ease-in-out;
-  -webkit-transition: all 500ms ease-in-out;
-  -moz-transition: all 500ms ease-in-out; }
+.robot {
+  transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out; }
 
-/* Robot turning animation end
-Robot move animation*/
-.robot.ng-hide-remove {
-  transition: all 500ms ease-in;
-  -o-transition: all 500ms ease-in;
-  -webkit-transition: all 500ms ease-in;
-  -moz-transition: all 500ms ease-in; }
+/* Apple disappearing */
+.apple {
+  opacity: 1; }
 
-.robot.ng-hide-remove-active {
-  transform: translate(0, 0);
-  -o-transform: translate(0, 0);
-  -webkit-transform: translate(0, 0);
-  -moz-transform: translate(0, 0);
-  -ms-transform: translate(0, 0); }
+.apple.ng-hide-add {
+  transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease; }
+
+.apple.ng-hide {
+  opacity: 0;
+  transform: translate(0, 120%);
+  -o-transform: translate(0, 120%);
+  -webkit-transform: translate(0, 120%);
+  -moz-transform: translate(0, 120%);
+  -ms-transform: translate(0, 120%); }
+
+/*.apple.ng-hide.up-robot {
+  @include moveApple(0, -120%);
+}
+.apple.ng-hide.bottom-robot {
+  @include moveApple(0, 120%);
+}
+.apple.ng-hide.left-robot {
+  @include moveApple(-120%, 0);
+}
+.apple.ng-hide.right-robot {
+  @include moveApple(120%, 0);
+}*/
 
 /*# sourceMappingURL=styles.css.map */

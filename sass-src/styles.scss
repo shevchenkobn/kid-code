@@ -1,4 +1,4 @@
-$animation-duration: 500ms;
+$animation-duration: 0.5s;
 
 @font-face {
     font-family: tiger-grumpy;
@@ -48,27 +48,29 @@ body, html {
 @mixin rotate($deg) {
   @include transform(rotate($deg));
 }
-/* Robot turning animation end
-Robot move animation*/
-.robot.ng-hide-remove {
-  @include transition(all $animation-duration ease-in);
+/* Apple disappearing */
+.apple {
+  opacity: 1;
 }
-.robot.ng-hide-remove-active {
-  @extend .robot;
-  @include transform(translate(0, 0));
+.apple.ng-hide-add {
+  @include transition(all $animation-duration ease);
 }
-//.up.enter-active {
-//  @extend .robot;
-//}
-//.right.enter-active {
-//  @extend .robot;
-//  //@include robot-rotate(90deg);
-//}
-//.bottom.enter-active {
-//  @extend .robot;
-//  //@include robot-rotate(180deg);
-//}
-//.left.enter-active {
-//  @extend .robot;
-//  //@include robot-rotate(270deg);
-//}
+@mixin moveApple($x, $y) {
+  opacity: 0;
+  @include transform(translate($x, $y));
+}
+.apple.ng-hide {
+  @include moveApple(0, 120%);
+}
+/*.apple.ng-hide.up-robot {
+  @include moveApple(0, -120%);
+}
+.apple.ng-hide.bottom-robot {
+  @include moveApple(0, 120%);
+}
+.apple.ng-hide.left-robot {
+  @include moveApple(-120%, 0);
+}
+.apple.ng-hide.right-robot {
+  @include moveApple(120%, 0);
+}*/
