@@ -37,9 +37,14 @@
     </md-grid-list>
 </md-content>
 <md-sidenav md-component-id="{{commandsId}}" class="md-sidenav-left md-whiteframe-z2"
-            md-is-locked-open="openCommands">
+            md-is-locked-open="commandsPinned">
     <md-toolbar md-colors="{background: 'primary-200'}">
-        <h1 class="md-toolbar-tools">Commands</h1>
+        <div class="md-toolbar-tools">
+            <md-button class="md-icon-button md-accent">
+                <md-icon ng-show="commandsPinned" ng-click="closeCommands($event)" md-svg-src="./app/images/arrow-left.svg"></md-icon>
+            </md-button>
+            <h1>Commands</h1>
+        </div>
     </md-toolbar>
     <md-list>
         <md-list-item ng-repeat="command in commands track by $index"

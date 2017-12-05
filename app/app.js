@@ -1,5 +1,5 @@
 angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
-  .controller('robot-ctrl', function($scope, $interval, $mdSidenav, $timeout) {
+  .controller('robot-ctrl', function($scope, $interval, $mdSidenav, $timeout, $mdDialog) {
     function CellInfo(status) {
       var object = {
         robot: false,
@@ -39,7 +39,12 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
     CellInfo.stubPngPath = './app/images/stub.png';
     function RobotTutorial(tilesArray, size, robot, apples, commandsArray) {
       var currentCoords;
+      var pristine = false;
       function initBoard() {
+        if (pristine)
+        {
+          return;
+        }
         for (var i = 0; i < size * size; i++) {
           tilesArray[i] = new CellInfo();
         }
@@ -48,6 +53,10 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           getTileAt(apples[i][0], apples[i][1]).switch(CellInfo.statusEnum.APPLE);
         }
         currentCoords = robot.slice();
+        orientation = RobotTutorial.orientation.UP;
+        if (orientationChangedListener) {
+          orientationChangedListener(orientation, 0);
+        }
       }
       initBoard();
       function getTileAt(row, column) {
@@ -57,12 +66,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
         return tilesArray[row * size + column] = value;
       }
       
-      var orientationEnum = {
-        UP: 0,
-        RIGHT: 1,
-        BOTTOM: 2,
-        LEFT: 3
-      };
+      var orientationEnum = RobotTutorial.orientation;
       RobotTutorial.orientation = orientationEnum;
       var orientation = orientationEnum.UP;
       var orientationChangedListener = false;
@@ -80,11 +84,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
         }
         orientation = newOrientation;
         if (orientationChangedListener) {
-          orient = RobotTutorial.cssRobotRotate[getOrientationString()];
-          orientationChangedListener(RobotTutorial.genaralRobotClass +
-            ' ' + orient,
-            direction,
-            size * currentCoords[0] + currentCoords[1]);
+          orientationChangedListener(orientation, direction);
         }
       }
       function getOrientationString() {
@@ -100,14 +100,13 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
       }
       var actions = {
         makeStep: function() {
-          var coords = getAccessibleTile("Cannot go out of the board");
+          var coords = getAccessibleTile();
           if (!coords) {
-            return false;
+            return "Cannot go out of the board";
           }
           var newCell = getTileAt(coords[0], coords[1]);
           if (newCell.apple) {
-            alert('Can\'t go to apple');
-            return false;
+            return 'Can\'t step on the apple';
           }
           var oldCell = getTileAt(currentCoords[0], currentCoords[1]);
           if (robotMovedListener) {
@@ -137,16 +136,14 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           return true;
         },
         takeApple: function() {
-          var coords = getAccessibleTile("Cannot take apple from out of the board");
+          var coords = getAccessibleTile();
           if (!coords) {
-            return coords;
+            return "Cannot take apple from out of the board";
           }
           var tile = getTileAt(coords[0], coords[1]);
           if (!tile.apple) {
-            alert("There is nothing to take the cell");
-            return false;
+            return "There is nothing to take in the cell";
           }
-          //TODO: animate
           tile.switch(CellInfo.statusEnum.EMPTY);
           return true;
         }
@@ -170,7 +167,6 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
         if (coords[0] < 0 || coords[0] >= size ||
           coords[1] < 0 || coords[1] >= size)
         {
-          alert(message);
           return false;
         }
         return coords;
@@ -188,13 +184,19 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
       var interpretListener;
       var executedListener;
       var plugin = undefined;
+      var executed = false;
+      function reloadCommands() {
+        commandsArray.length = 0;
+        for (var i = 0; i < instructions.length; i++) {
+          commandsArray[i] = {command: instructions[i], executed: false};
+        }
+      }
       function execute() {
         var result = false;
+        initBoard();
+        executed = true;
         if (instructions.length) {
-          commandsArray.length = 0;
-          for (var i = 0; i < instructions.length; i++) {
-            commandsArray[i] = {command: instructions[i], executed: false};
-          }
+          reloadCommands();
           i = 0;
           var interval = $interval(function() {
             commandsArray[i].executed = true;
@@ -205,7 +207,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
             var result = actions[instructions[i]]();
             if (result !== true) {
               $interval.cancel(interval);
-              finishExecution(false, result);
+              return finishExecution(false, result);
             }
             i++;
             if (i === instructions.length) {
@@ -220,18 +222,32 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
               }
             }
           }, RobotTutorial.stepMilisecs, instructions.length);
-        } else if (executedListener) {
-          executedListener(result);
+          pristine = false;
         }
       }
       function finishExecution(result, msg) {
-        alert(msg);
+        if (!result)
+        {
+          if (executedListener) {
+            executedListener(result, msg);
+          }
+          return;
+        }
         if (executedListener) {
-          executedListener(result);
+          if (checkForCompletion()) {
+            executedListener(result, msg);
+          } else {
+            executedListener(false, 'You didn\'t collect all the apples');
+          }
         }
       }
-      function alert(message) {
-        //TODO: output dialog
+      function checkForCompletion() {
+        for (var i = 0; i < tilesArray.length; i++) {
+          if (tilesArray[i].apple) {
+            return false;
+          }
+        }
+        return true;
       }
       function buildClientPart(code) {
         return "var robot = {};\n" +
@@ -261,24 +277,34 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
 
       function addInstruction(action) {
         if (instructions.length >= RobotTutorial.instructionLength) {
-          endInterpretationStartExecution(false);
-          alert("Ooops, too many instructions," +
+          finishInterpretation(false, "Ooops, too many instructions," +
             " Robot cannot do them all");
           return;
         }
         instructions.push(action);
       }
-      function endInterpretationStartExecution(ok) {
+      function finishInterpretation(ok, message) {
         plugin.disconnect();
         plugin = undefined;
+        executed = false;
         if (interpretListener) {
           if (ok) {
+            if (!instructions.length) {
+              interpretListener(false, "Robot can't see any commands");
+              return;
+            }
+            reloadCommands();
             interpretListener(ok, execute);
+            if (!executed) {
+              execute();
+            }
           } else {
-            interpretListener(ok);
+            interpretListener(ok, message);
           }
-        } else if (ok) {
-          execute();
+        } else {
+          if (ok) {
+            execute();
+          }
         }
       }
       function extractLineAndColumn(stack) {
@@ -294,9 +320,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           instructions.length = 0;
         },
         __handleError: function (obj) {
-          alert("You made an error :(", obj.name + ': ' +
-            obj.message + "</br>" + obj.stack);
-          endInterpretationStartExecution(false);
+          finishInterpretation(false, "You made an error :( ", obj.name + ': ' +
+            obj.message);
           if (executedListener) {
             executedListener(false);
           }
@@ -335,13 +360,17 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           return orientationChangedListener;
         },
         get api() {
-          return api;
+          return angular.copy(api);
         },
         init: function(code) {
-          plugin = new jailed.DynamicPlugin(prepareCode(code), api);
-          plugin.whenConnected(function() {
-            endInterpretationStartExecution(true);
-          });
+          try {
+            plugin = new jailed.DynamicPlugin(prepareCode(code), api);
+            plugin.whenConnected(function () {
+              finishInterpretation(true);
+            });
+          } catch (e) {
+            finishInterpretation(false, 'Ensure your code correctness');
+          }
         },
         set onExecuteEnd(listener) {
           if (!listener || typeof listener === 'function') {
@@ -358,17 +387,21 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
         },
         get onInterpretEnd() {
           return interpretListener;
+        },
+        reset: function() {
+          initBoard();
+          pristine = true;
         }
       };
     }
     RobotTutorial.instructionLength = 500;
     RobotTutorial.animationLength = 500;
     RobotTutorial.stepMilisecs = 700;
-    RobotTutorial.cssRobotRotate = {
-      UP: 'up',
-      RIGHT: 'right',
-      BOTTOM: 'bottom',
-      LEFT: 'left'
+    RobotTutorial.orientation = {
+      UP: 0,
+      RIGHT: 1,
+      BOTTOM: 2,
+      LEFT: 3
     };
     RobotTutorial.genaralRobotClass = 'robot';
     RobotTutorial.turnDirection = {
@@ -383,7 +416,27 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
     $scope.commands = [];
     var engine = new RobotTutorial($scope.board, 5, [3, 3], [[0, 1], [3, 4], [4, 2], [3, 4]], $scope.commands);
     engine.onRobotOrientationChange = function(newClass, direction) {
-      $('.robot-cell .robot').css({ rotate: (direction < 0 ? '-' : '+') + '=90' });
+      var robots = $('.robot-cell .robot');
+      if (direction === 0) {
+        var rotate;
+        switch (newClass) {
+          case RobotTutorial.orientation.UP:
+            rotate = 0;
+            break;
+          case RobotTutorial.orientation.RIGHT:
+            rotate = 90;
+            break;
+          case RobotTutorial.orientation.BOTTOM:
+            rotate = 180;
+            break;
+          case RobotTutorial.orientation.LEFT:
+            rotate = 270;
+            break;
+        }
+        robots.css({ rotate: rotate });
+      } else {
+        robots.css({rotate: (direction < 0 ? '-' : '+') + '=90'});
+      }
       // $scope.robotClass = newClass;
       // var cells = $('.robot-cell .robot');
       // if (!direction) {
@@ -494,13 +547,47 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
       }
     }
     $scope.commandsId = 'commands';
-    engine.onInterpretEnd = function(ok, execute) {
+    var commandsTab = $mdSidenav($scope.commandsId);
+    $scope.closeCommands = function() {
+      engine.reset();
+      $scope.commandsPinned = false;
+    };
+    engine.onInterpretEnd = function(ok, parameter) {
       if (ok) {
-        $mdSidenav($scope.commandsId).open().then(function() {
+        var execute = parameter;
+        commandsTab.open().then(function() {
             $timeout(execute, RobotTutorial.stepMilisecs);
           });
-        $scope.openCommands = true;
+        $scope.commandsPinned = true;
+      } else {
+        var message = parameter;
+        var alert = $mdDialog.alert({
+          title: "Your code has errors :(",
+          textContent: message,
+          ok: 'Not good',
+          theme: 'warn'
+        });
+        $mdDialog.show(alert);
       }
+    };
+    engine.onExecuteEnd = function(result, message) {
+      var alert;
+      if (result) {
+        alert = $mdDialog.alert({
+          title: "Congratulations!",
+          textContent: message,
+          ok: 'Yes!',
+          theme: 'warn'
+        });
+        $scope.commandsPinned = false;
+      } else {
+        alert = $mdDialog.alert({
+          title: "Something went wrong",
+          textContent: message,
+          ok: 'Oh no'
+        });
+      }
+      $mdDialog.show(alert);
     };
     var code = "";
     function codeChanged(e) {
