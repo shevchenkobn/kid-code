@@ -1,4 +1,10 @@
 angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
+  .config(function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+      .primaryPalette('teal')
+      .accentPalette('deep-purple')
+      .warnPalette('purple');
+  })
   .controller('robot-ctrl', function($scope, $interval, $mdSidenav, $timeout, $mdDialog) {
     function CellInfo(status) {
       var object = {
