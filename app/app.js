@@ -1,4 +1,4 @@
-angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
+angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate', 'angular-intro'])
   .config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
       .primaryPalette('teal')
@@ -12,7 +12,11 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
         default: '800'
       }).warnPalette('deep-purple')
   })
-  .controller('robot-ctrl', function($scope, $interval, $mdSidenav, $timeout, $mdDialog) {
+  .controller('robot-ctrl', function($scope,
+                                     $interval,
+                                     $mdSidenav,
+                                     $timeout,
+                                     $mdDialog) {
     function CellInfo(status) {
       var object = {
         robot: false,
@@ -269,9 +273,9 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           "            robot[prop] = application.remote[prop];\n" +
           "          }\n" +
           "        }\n" +
-          "        application.remote.__start(application.remote.__getTime());" +
+          "        application.remote.__start();" +
           code +
-          "application.remote.__finish(application.remote.__getTime());";
+          "application.remote.__finish();";
       }
       function prepareCode(code) {
         return "try {" + buildClientPart(code) + "} catch (ex) { application.remote.__handleError(" +
@@ -324,9 +328,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
       }
       var elapsedTime;
       var api = {
-        __getTime: window.performance.now.bind(performance),
-        __start: function (nowTime) {
-          elapsedTime = nowTime;
+        __start: function () {
+          elapsedTime = performance.now();
           instructions.length = 0;
         },
         __handleError: function (obj) {
@@ -336,8 +339,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
             executedListener(false);
           }
         },
-        __finish: function (nowTime) {
-          elapsedTime = nowTime - elapsedTime;
+        __finish: function () {
+          elapsedTime = performance.now() - elapsedTime;
         },
         makeStep: function() {
           addInstruction('makeStep');
@@ -402,6 +405,12 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           initBoard();
           commandsArray.length = 0;
           pristine = true;
+        },
+        get commandsNumber() {
+          return commandsArray.length;
+        },
+        get elapsedTime() {
+          return elapsedTime;
         }
       };
     }
@@ -604,10 +613,18 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
     engine.onExecuteEnd = function(result, message) {
       var alert;
       if (result) {
-        alert = $mdDialog.alert({
-          title: "Congratulations!",
-          textContent: message,
-          ok: 'Yes!'
+        $mdDialog.show({
+          templateUrl: './templates/successDialog.html',
+          controller: function($scope, $mdDialog) {
+            $scope.message = message;
+            $scope.count = engine.commandsNumber;
+            $scope.time = engine.elapsedTime;
+            $scope.closeDialog = function() {
+              $mdDialog.hide();
+            };
+          },
+          clickOutsideToClose: false,
+          parent: $('body')
         });
       } else {
         alert = $mdDialog.alert({
@@ -617,7 +634,6 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           theme: 'warn'
         });
       }
-      $mdDialog.show(alert);
       $scope.hasRun = true;
       $scope.isRunning = false;
     };
@@ -638,10 +654,119 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
     
     
     ////////////////////////////help and tutorial
+    var hintsOptions = {
+      hints: [
+        {
+          element: '#helpTipsBtn',
+          hint: 'Toggle helping tips'
+        },
+        {
+          element: '#tutorialBtn',
+          hint: 'Start tutorial'
+        },
+        {
+          element: '#board',
+          hint: 'It is your robot board!'
+        },
+        {
+          element: '#editor',
+          hint: '<p>Type your code here. Use commands</p>' +
+          '<ul>' +
+          '<li><code>robot.makeStep()</code></li>' +
+          '<li><code>robot.turnRight()</code></li>' +
+          '<li><code>robot.turnLeft()</code></li>' +
+          '<li><code>robot.takeApple()</code></li>' +
+          '</ul>'
+        },
+        {
+          element: '#runBtn',
+          hint: 'Press this button to run code',
+          hintPosition: 'top-left'
+        }
+      ]
+    };
     $scope.tooltipsActive = false;
-    $scope.showTooltips = function(event) {
+    var intro = introJs();
+    intro.setOptions(hintsOptions);
+    var openedHints = 0;
+    intro.onhintclose(function() {
+      openedHints--;
+      if (!openedHints) {
+        $scope.tooltipsActive = !$scope.tooltipsActive;
+        $scope.$apply();
+      }
+    });
+    var firstTime = true;
+    $scope.showHelpTips = function(event) {
+      if (!$scope.tooltipsActive) {
+        if (firstTime) {
+          firstTime = false;
+          intro.addHints();
+        } else {
+          intro.showHints();
+        }
+        openedHints = hintsOptions.hints.length;
+      } else {
+        intro.hideHints();
+      }
       $scope.tooltipsActive = !$scope.tooltipsActive;
-    }
+    };
+    $scope.introOptions = {
+      steps: [
+        {
+          intro: "Hello, friend! Here you will help robot to collect apples!"
+        },
+        {
+          element: '#editor',
+          intro: "You will write code here"
+        },
+        {
+          element: '#board',
+          intro: "And see result here"
+        },
+        {
+          element: '#editor',
+          intro: "To make robot step write <code>robot.makeStep()</code>"
+        },
+        {
+          element: '#editor',
+          intro: "To turn robot right write <code>robot.turnRight()</code>"
+        },
+        {
+          element: '#editor',
+          intro: "To turn robot left write <code>robot.turnLeft()</code>"
+        },
+        {
+          element: '#editor',
+          intro: "To take apple write <code>robot.takeApple()</code>"
+        },
+        {
+          element: '#runBtn',
+          intro: "When you want to run your code press this button"
+        },
+        {
+          element: '#board',
+          intro: "Enjoy your result here!"
+        },
+        {
+          element: '#tutorialBtn',
+          intro: "If you want to repeat tutorial press this button"
+        },
+        {
+          element: '#helpTipsBtn',
+          intro: "Or you can turn on help tips"
+        },
+        {
+          intro: "Now, try it! Use commands <code>robot.makeStep()," +
+          "robot.takeApple(), robot.turnRight(), robot.turnLeft()</code>"
+        }
+      ],
+      hidePrev: true,
+      hideNext: true,
+      showStepNumbers: false,
+      disableInteraction: true,
+      exitOnOverlayClick: false
+    };
   });
 /*
 robot.turnRight();

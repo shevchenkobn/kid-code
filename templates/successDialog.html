@@ -1,0 +1,18 @@
+<md-dialog>
+    <md-toolbar md-colors="{background: 'default-primary'}">
+        <div class="md-toolbar-tools">
+            <h1>Congratulations!</h1>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <h1 class="md-title">{{message ? message : 'You have coped with the task'}}</h1>
+            <p>Robot has executed <span md-colors="{color: 'default-primary'}">{{count}}</span> commands.</p>
+            <p>It took <span md-colors="{color: 'default-primary'}">{{time}}</span> miliseconds.</p>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <span flex></span>
+        <md-button ng-click="closeDialog()">YES!</md-button>
+    </md-dialog-actions>
+</md-dialog>

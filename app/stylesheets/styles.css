@@ -10,6 +10,9 @@
 body, html {
   height: 100%; }
 
+.content {
+  height: 100%; }
+
 .md-button.md-icon-button.fab-like {
   height: 56px;
   width: 56px;
