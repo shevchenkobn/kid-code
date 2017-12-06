@@ -10,12 +10,10 @@
 body, html {
   height: 100%; }
 
-.content {
-  height: 100%; }
-
-.content-75 {
-  height: 75%;
-  position: relative !important; }
+.md-button.md-icon-button.fab-like {
+  height: 56px;
+  width: 56px;
+  margin: 6px 8px; }
 
 #board {
   position: relative; }

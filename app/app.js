@@ -635,6 +635,13 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
       mode: 'javascript',
       theme: 'katzenmilch'
     };
+    
+    
+    ////////////////////////////help and tutorial
+    $scope.tooltipsActive = false;
+    $scope.showTooltips = function(event) {
+      $scope.tooltipsActive = !$scope.tooltipsActive;
+    }
   });
 /*
 robot.turnRight();

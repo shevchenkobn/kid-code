@@ -17,6 +17,12 @@
         <!--</md-button>-->
         <h1 class="title" md-colors="{color:'accent-600-.8'}">Kid-Code</h1>
         <span flex></span>
+        <md-button class="md-fab">
+            <md-icon md-svg-src="./app/images/help-tutorial.svg"></md-icon>
+        </md-button>
+        <md-button ng-class="{'md-fab': !tooltipsActive, 'md-icon-button fab-like': tooltipsActive}" ng-click="showTooltips($event)">
+            <md-icon md-svg-src="./app/images/help-tooltip.svg"></md-icon>
+        </md-button>
     </div>
 </md-toolbar>
 <div class="content" layout="row" flex>
@@ -37,7 +43,7 @@
 </md-content>
 <md-sidenav md-component-id="{{commandsId}}" class="md-sidenav-left md-whiteframe-z2"
             md-is-locked-open="commandsPinned">
-    <md-toolbar md-colors="{background: 'primary-200'}">
+    <md-toolbar md-colors="{background: 'primary-300'}">
         <div class="md-toolbar-tools">
             <md-button class="md-icon-button md-accent" ng-show="!isRunning" ng-click="closeCommands($event)">
                 <md-icon md-svg-src="./app/images/arrow-left.svg"></md-icon>
