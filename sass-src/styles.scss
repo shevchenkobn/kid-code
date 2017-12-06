@@ -20,12 +20,21 @@ body, html {
     height: 75%;
     position: relative !important;
 }
+#board {
+  position: relative;
+}
+@mixin raiseAboveMarkup() {
+  position: relative;
+  z-index: 1;
+}
 .icon.robot {
     height: 100%;
+   @include raiseAboveMarkup();
 }
 .icon.apple {
     height: 61.7%;
     width: 61.7%;
+  @include raiseAboveMarkup();
 }
 
 @mixin transition($config) {

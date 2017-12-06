@@ -21,19 +21,17 @@
 </md-toolbar>
 <div class="content" layout="row" flex>
 <md-content flex-gt-sm="35" flex-sm="50" flex-xs="100" ng-hide="$mdMedia('sm')" layout-padding md-whiteframe="5">
-    <md-grid-list id="board" md-cols="5" md-gutter="2%" md-row-height="1:1" style="position: relative">
+    <md-grid-list id="board" md-cols="5" md-gutter="2%" md-row-height="1:1">
         <md-grid-tile
                 md-colors="{background: 'accent-600-.50'}"
                 class="md-accent robot-cell"
                 ng-repeat="cell in board track by $index"
                 md-whiteframe="4">
             <img class="icon robot" ng-show="cell.robot" src="{{cell.robot ? cell.robot : cell.empty}}"
-                 ng-class="robotClass"
-                 style="position: relative; z-index: 999">
+                 ng-class="robotClass">
             <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}"
                      class="icon apple up-robot"
-                     ng-animate="'apple'"
-                     style="position: relative; z-index: 999"></md-icon>
+                     ng-animate="'apple'"></md-icon>
         </md-grid-tile>
     </md-grid-list>
 </md-content>

@@ -4,6 +4,13 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
       .primaryPalette('teal')
       .accentPalette('deep-purple')
       .warnPalette('purple');
+    $mdThemingProvider.theme('warn')
+      .backgroundPalette('purple', {
+        default: '100'
+      }).primaryPalette('teal')
+      .accentPalette('purple', {
+        default: '800'
+      }).warnPalette('deep-purple')
   })
   .controller('robot-ctrl', function($scope, $interval, $mdSidenav, $timeout, $mdDialog) {
     function CellInfo(status) {
@@ -600,14 +607,14 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
         alert = $mdDialog.alert({
           title: "Congratulations!",
           textContent: message,
-          ok: 'Yes!',
-          theme: 'warn'
+          ok: 'Yes!'
         });
       } else {
         alert = $mdDialog.alert({
           title: "Something went wrong",
           textContent: message,
-          ok: 'Oh no'
+          ok: 'Oh no',
+          theme: 'warn'
         });
       }
       $mdDialog.show(alert);
