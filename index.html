@@ -6,14 +6,15 @@
     <link rel="stylesheet" href="./app/stylesheets/styles.css">
 </head>
 <body ng-app="code-tutorial" layout-fill ng-controller="robot-ctrl" layout="column">
-<md-button class="md-fab md-hue-2 md-fab-bottom-right" ng-click="run()">
-    <md-icon md-svg-src="./app/images/run-code.svg"></md-icon>
+<md-button class="md-fab md-hue-2 md-fab-bottom-right" ng-disabled="isRunning" ng-click="run()">
+    <md-icon ng-show="!hasRun" md-svg-src="./app/images/run-code.svg"></md-icon>
+    <md-icon ng-show="hasRun" md-svg-src="./app/images/reload.svg"></md-icon>
 </md-button>
 <md-toolbar class="md-medium-tall" md-whiteframe="6">
     <div layout="row" layout-align="bottom center">
-        <md-button ng-hide="true" class="md-icon-button">
-            <md-icon md-svg-src="./app/images/menu.svg"></md-icon>
-        </md-button>
+        <!--<md-button ng-hide="true" class="md-icon-button">-->
+            <!--<md-icon md-svg-src="./app/images/menu.svg"></md-icon>-->
+        <!--</md-button>-->
         <h1 class="title">Kid-Code</h1>
         <span flex></span>
     </div>
@@ -40,8 +41,8 @@
             md-is-locked-open="commandsPinned">
     <md-toolbar md-colors="{background: 'primary-200'}">
         <div class="md-toolbar-tools">
-            <md-button class="md-icon-button md-accent">
-                <md-icon ng-show="commandsPinned" ng-click="closeCommands($event)" md-svg-src="./app/images/arrow-left.svg"></md-icon>
+            <md-button class="md-icon-button md-accent" ng-show="!isRunning" ng-click="closeCommands($event)">
+                <md-icon md-svg-src="./app/images/arrow-left.svg"></md-icon>
             </md-button>
             <h1>Commands</h1>
         </div>

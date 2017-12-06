@@ -295,9 +295,6 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
             }
             reloadCommands();
             interpretListener(ok, execute);
-            if (!executed) {
-              execute();
-            }
           } else {
             interpretListener(ok, message);
           }
@@ -390,6 +387,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
         },
         reset: function() {
           initBoard();
+          commandsArray.length = 0;
           pristine = true;
         }
       };
@@ -409,8 +407,16 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
       NONE: 0,
       LEFT: -1
     };
+    $scope.isRunning = false;
     $scope.run = function() {
-      engine.init(code);
+      if ($scope.hasRun) {
+        engine.reset();
+        closeCommands();
+        $scope.hasRun = false;
+      } else {
+        $scope.isRunning = true;
+        engine.init(code);
+      }
     };
     $scope.board = [];
     $scope.commands = [];
@@ -547,15 +553,25 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
       }
     }
     $scope.commandsId = 'commands';
-    var commandsTab = $mdSidenav($scope.commandsId);
-    $scope.closeCommands = function() {
-      engine.reset();
+    $scope.hasRun = false;
+    var commandsTab = null;
+    function closeCommands() {
       $scope.commandsPinned = false;
-    };
+      commandsTab.onClose(function() {
+        $scope.commandsPinned = false;
+      });
+      commandsTab.close();
+    }
+    $scope.isRunning = true;
+    $mdSidenav($scope.commandsId, true).then(function(instance) {
+      $scope.isRunning = false;
+      commandsTab = instance;
+    });
+    $scope.closeCommands = closeCommands;
     engine.onInterpretEnd = function(ok, parameter) {
       if (ok) {
         var execute = parameter;
-        commandsTab.open().then(function() {
+        $mdSidenav($scope.commandsId).open().then(function() {
             $timeout(execute, RobotTutorial.stepMilisecs);
           });
         $scope.commandsPinned = true;
@@ -568,6 +584,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           theme: 'warn'
         });
         $mdDialog.show(alert);
+        $scope.hasRun = true;
+        $scope.isRunning = false;
       }
     };
     engine.onExecuteEnd = function(result, message) {
@@ -579,7 +597,6 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
           ok: 'Yes!',
           theme: 'warn'
         });
-        $scope.commandsPinned = false;
       } else {
         alert = $mdDialog.alert({
           title: "Something went wrong",
@@ -588,6 +605,8 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate'])
         });
       }
       $mdDialog.show(alert);
+      $scope.hasRun = true;
+      $scope.isRunning = false;
     };
     var code = "";
     function codeChanged(e) {
