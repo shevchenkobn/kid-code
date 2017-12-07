@@ -2,18 +2,40 @@
   font-family: tiger-grumpy;
   src: url("../fonts/DK Grumpy Tiger.otf"); }
 .title {
-  font-size: 4rem !important;
   font-family: tiger-grumpy;
+  font-size: 4rem !important;
   margin: 0 0 0 0.5em !important;
   letter-spacing: 0.5rem; }
 
+.title-roboto {
+  font-size: 4rem !important;
+  margin: 0 0 0 0.5em !important;
+  letter-spacing: 0.5rem;
+  text-align: center; }
+
 body, html {
   height: 100%; }
+
+.top-offset {
+  padding-top: 48px; }
+
+.description {
+  font-size: 3rem;
+  font-weight: 700; }
 
 .background-video {
   position: relative; }
   .background-video video {
     z-index: -1; }
+
+.no-link {
+  text-decoration: none; }
+
+md-nav-bar .md-nav-bar {
+  background: #4db6ac; }
+  md-nav-bar .md-nav-bar ._md-nav-button-text {
+    color: #fff;
+    font-weight: 700; }
 
 .background-video .overlay {
   width: 100%;
@@ -29,7 +51,8 @@ body, html {
   height: 90%; }
 
 .content-width-100 {
-  width: 100%; }
+  width: 100%;
+  height: 61%; }
 
 .md-button.md-icon-button.fab-like {
   height: 56px;
@@ -61,6 +84,12 @@ body, html {
 .apple {
   opacity: 1; }
 
+.code {
+  color: #512DA8;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 1.2rem; }
+
 .apple.ng-hide-add {
   transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
@@ -76,16 +105,16 @@ body, html {
   -ms-transform: translate(0, 120%); }
 
 /*.apple.ng-hide.up-robot {
-  @include moveApple(0, -120%);
+@include moveApple(0, -120%);
 }
 .apple.ng-hide.bottom-robot {
-  @include moveApple(0, 120%);
+@include moveApple(0, 120%);
 }
 .apple.ng-hide.left-robot {
-  @include moveApple(-120%, 0);
+@include moveApple(-120%, 0);
 }
 .apple.ng-hide.right-robot {
-  @include moveApple(120%, 0);
+@include moveApple(120%, 0);
 }*/
 
 /*# sourceMappingURL=styles.css.map */

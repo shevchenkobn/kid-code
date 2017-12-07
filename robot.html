@@ -19,21 +19,26 @@
            id="runBtn">
     <md-icon ng-show="!hasRun" md-svg-src="./app/images/run-code.svg"></md-icon>
     <md-icon ng-show="hasRun" md-svg-src="./app/images/reload.svg"></md-icon>
+    <md-tooltip md-direction="left">{{hasRun ? 'Repeat' : 'Play'}}</md-tooltip>
 </md-button>
 <md-toolbar class="md-medium-tall" md-whiteframe="6">
     <div layout="row" layout-align="bottom center">
         <!--<md-button ng-hide="true" class="md-icon-button">-->
             <!--<md-icon md-svg-src="./app/images/menu.svg"></md-icon>-->
         <!--</md-button>-->
-        <h1 class="title" md-colors="{color:'accent-600-.8'}">Kid-Code</h1>
+        <a href="./index.html" class="no-link">
+            <h1 class="title no-link" md-colors="{color:'accent-600-.8'}">Kid-Code</h1>
+        </a>
         <span flex></span>
         <md-button class="md-fab" id="tutorialBtn" ng-click="startGuide()">
             <md-icon md-svg-src="./app/images/help-tutorial.svg"></md-icon>
+            <md-tooltip>Watch guide</md-tooltip>
         </md-button>
         <md-button
                 ng-class="{'md-fab': !tooltipsActive, 'md-icon-button fab-like': tooltipsActive}"
                 ng-click="showHelpTips($event)" id="helpTipsBtn">
             <md-icon md-svg-src="./app/images/help-tooltip.svg"></md-icon>
+            <md-tooltip>Show helping tootltips</md-tooltip>
         </md-button>
     </div>
 </md-toolbar>

@@ -605,6 +605,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate', 'angular-i
           ok: 'Not good',
           theme: 'warn'
         });
+        
         $mdDialog.show(alert);
         $scope.hasRun = true;
         $scope.isRunning = false;
@@ -627,12 +628,12 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate', 'angular-i
           parent: $('body')
         });
       } else {
-        alert = $mdDialog.alert({
+        $mdDialog.show($mdDialog.alert({
           title: "Something went wrong",
           textContent: message,
           ok: 'Oh no',
           theme: 'warn'
-        });
+        }));
       }
       $scope.hasRun = true;
       $scope.isRunning = false;
@@ -671,7 +672,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate', 'angular-i
         {
           element: '#editor',
           hint: '<p>Type your code here. Use commands</p>' +
-          '<ul>' +
+          '<ul class="code">' +
           '<li><code>robot.makeStep()</code></li>' +
           '<li><code>robot.turnRight()</code></li>' +
           '<li><code>robot.turnLeft()</code></li>' +
@@ -726,19 +727,19 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate', 'angular-i
         },
         {
           element: '#editor',
-          intro: "To make robot step write <code>robot.makeStep()</code>"
+          intro: "To make robot step write <code class=\"code\">robot.makeStep()</code>"
         },
         {
           element: '#editor',
-          intro: "To turn robot right write <code>robot.turnRight()</code>"
+          intro: "To turn robot right write <code class=\"code\">robot.turnRight()</code>"
         },
         {
           element: '#editor',
-          intro: "To turn robot left write <code>robot.turnLeft()</code>"
+          intro: "To turn robot left write <code class=\"code\">robot.turnLeft()</code>"
         },
         {
           element: '#editor',
-          intro: "To take apple write <code>robot.takeApple()</code>"
+          intro: "To take apple write <code class=\"code\">robot.takeApple()</code>"
         },
         {
           element: '#runBtn',
@@ -757,7 +758,7 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate', 'angular-i
           intro: "Or you can turn on help tips"
         },
         {
-          intro: "Now, try it! Use commands <code>robot.makeStep()," +
+          intro: "Now, try it! Use commands <code class=\"code\">robot.makeStep(), " +
           "robot.takeApple(), robot.turnRight(), robot.turnLeft()</code>"
         }
       ],

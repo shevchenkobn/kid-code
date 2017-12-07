@@ -5,18 +5,41 @@ $animation-duration: 0.5s;
     src: url("../fonts/DK Grumpy Tiger.otf");
 }
 .title {
-    font-size: 4rem !important;
     font-family: tiger-grumpy;
-    margin: 0 0 0 0.5em !important;
-    letter-spacing: 0.5rem;
+  font-size: 4rem !important;
+  margin: 0 0 0 0.5em !important;
+  letter-spacing: 0.5rem;
+}
+.title-roboto {
+  font-size: 4rem !important;
+  margin: 0 0 0 0.5em !important;
+  letter-spacing: 0.5rem;
+  text-align: center;
 }
 body, html {
     height: 100%;
+}
+.top-offset {
+  padding-top: 48px;
+}
+.description {
+  font-size: 3rem;
+  font-weight: 700;
 }
 .background-video {
   position: relative;
   video {
     z-index: -1;
+  }
+}
+.no-link {
+  text-decoration: none;
+}
+md-nav-bar .md-nav-bar {
+  background: #4db6ac;
+  ._md-nav-button-text {
+    color: #fff;
+    font-weight: 700;
   }
 }
 .background-video .overlay {
@@ -27,80 +50,87 @@ body, html {
   left: 0;
 }
 .content {
-  height: 100%;
+height: 100%;
 }
 .content-90 {
-  height: 90%;
+height: 90%;
 }
 .content-width-100 {
-  width: 100%;
+width: 100%;
+  height: 61%;
 }
 
 .md-button.md-icon-button.fab-like {
-  height: 56px;
-  width: 56px;
-  margin: 6px 8px;
+height: 56px;
+width: 56px;
+margin: 6px 8px;
 }
 #board {
-  position: relative;
+position: relative;
 }
 @mixin raiseAboveMarkup() {
-  position: relative;
-  z-index: 1;
+position: relative;
+z-index: 1;
 }
 .icon.robot {
-    height: 100%;
-   @include raiseAboveMarkup();
+  height: 100%;
+ @include raiseAboveMarkup();
 }
 .icon.apple {
-    height: 61.7%;
-    width: 61.7%;
-  @include raiseAboveMarkup();
+  height: 61.7%;
+  width: 61.7%;
+@include raiseAboveMarkup();
 }
 
 @mixin transition($config) {
-  transition: $config;
-  -o-transition: $config;
-  -webkit-transition: $config;
-  -moz-transition: $config;
+transition: $config;
+-o-transition: $config;
+-webkit-transition: $config;
+-moz-transition: $config;
 }
 /* Robot turning animation */
 .robot {
-  @include transition(all $animation-duration ease-in-out);
+@include transition(all $animation-duration ease-in-out);
 }
 @mixin transform($config) {
-  transform: $config;
-  -o-transform: $config;
-  -webkit-transform: $config;
-  -moz-transform: $config;
-  -ms-transform: $config;
+transform: $config;
+-o-transform: $config;
+-webkit-transform: $config;
+-moz-transform: $config;
+-ms-transform: $config;
 }
 @mixin rotate($deg) {
-  @include transform(rotate($deg));
+@include transform(rotate($deg));
 }
 /* Apple disappearing */
 .apple {
-  opacity: 1;
+opacity: 1;
+}
+.code {
+color: #512DA8;
+font-family: monospace;
+font-weight: 700;
+font-size: 1.2rem;
 }
 .apple.ng-hide-add {
-  @include transition(all $animation-duration ease);
+@include transition(all $animation-duration ease);
 }
 @mixin moveApple($x, $y) {
-  opacity: 0;
-  @include transform(translate($x, $y));
+opacity: 0;
+@include transform(translate($x, $y));
 }
 .apple.ng-hide {
-  @include moveApple(0, 120%);
+@include moveApple(0, 120%);
 }
 /*.apple.ng-hide.up-robot {
-  @include moveApple(0, -120%);
+@include moveApple(0, -120%);
 }
 .apple.ng-hide.bottom-robot {
-  @include moveApple(0, 120%);
+@include moveApple(0, 120%);
 }
 .apple.ng-hide.left-robot {
-  @include moveApple(-120%, 0);
+@include moveApple(-120%, 0);
 }
 .apple.ng-hide.right-robot {
-  @include moveApple(120%, 0);
+@include moveApple(120%, 0);
 }*/

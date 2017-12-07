@@ -9,14 +9,14 @@
 <body ng-app="code-tutorial" ng-controller="landing-ctrl">
 <md-nav-bar md-selected-nav-item="'index'">
     <md-nav-item name="index" md-nav-click="goto('index')">
-        Index
-    </md-nav-item>
-    <md-nav-item md-colors="{background: 'primary-500'}" md-nav-href="./robot.html">
-        Play!
-    </md-nav-item>
-    <md-nav-item name="about" md-nav-click="goto('about')">
         About
     </md-nav-item>
+    <md-nav-item md-nav-href="./robot.html">
+        Play!
+    </md-nav-item>
+    <!--<md-nav-item name="about" md-nav-click="goto('about')">-->
+        <!--About-->
+    <!--</md-nav-item>-->
     <md-nav-item name="videos" md-nav-click="goto('videos')">
         Tutorials
     </md-nav-item>
@@ -25,110 +25,95 @@
     <div ng-if="currentView === 'index'">
         <div class="background-video">
             <video autoplay muted loop>
-                <source src="./videos/lo%20lo%20lo%20loop%20op%20op%20op.mp4" type="video/mp4">
-                <source src="./videos/iAppleEater.mp4" type="video/mp4">
-                <source src="./videos/my%20maked%20steps.mp4" type="video/mp4">
-                <source src="./videos/you%20spin%20me%20%60round%20%60round%20baby%20%60round%20%60round.mp4" type="video/mp4">
+                <source src="./videos/preview.mp4" type="video/mp4">
             </video>
+            <div class="overlay content" style="background-color: #fff; opacity: 0.55"></div>
             <div class="overlay content" layout="column" layout-align="center center">
-                <h1 layout-padding class="title" md-colors="{color: 'accent-800'}">
+                <h1 layout-padding class="title" md-colors="{color: 'primary-800'}">
                     Kid-Code
                 </h1>
-                <a href="./robot.html" layout-padding layout-margin class="md-button md-raised md-primary">
+                <a href="./robot.html" layout-padding layout-margin class="md-button md-raised md-accent">
                     <h1 class="md-title">Play now!</h1>
                 </a>
             </div>
         </div>
-        <md-grid-list md-cols="5" md-gutter="5%" md-row-height="0.382:0.612" layout-margin>
+        <div style="height: 2rem"></div>
+        <div layout="row" layout-align="center center">
+        <md-grid-list md-cols="3" md-gutter="15%" md-row-height="0.382:0.612" layout-margin flex="75">
             <md-grid-tile>
                 <md-card layout-align="center center" md-whiteframe="5">
-                    <img src="./app/images/robot.png">
+                    <img src="./app/images/robot2.png">
                     <md-card-content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                        <p>Playing is your study!</p>
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
             <md-grid-tile>
                 <md-card layout-align="center center" md-whiteframe="5">
-                    <img src="./app/images/robot.png">
+                    <img src="./app/images/robot1.png">
                     <md-card-content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                        <p>Learn real programming language - JavaScript</p>
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
             <md-grid-tile>
                 <md-card layout-align="center center" md-whiteframe="5">
-                    <img src="./app/images/robot.png">
+                    <img src="./app/images/robot3.png">
                     <md-card-content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                    </md-card-content>
-                </md-card>
-            </md-grid-tile>
-            <md-grid-tile>
-                <md-card layout-align="center center" md-whiteframe="5">
-                    <img src="./app/images/robot.png">
-                    <md-card-content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                    </md-card-content>
-                </md-card>
-            </md-grid-tile>
-            <md-grid-tile>
-                <md-card layout-align="center center" md-whiteframe="5">
-                    <img src="./app/images/robot.png">
-                    <md-card-content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                        <p>Admire your progress</p>
                     </md-card-content>
                 </md-card>
             </md-grid-tile>
         </md-grid-list>
-        <div layout-margin layout-padding layout-align="center center" layout="row"><a href="./robot.html" layout-padding layout-margin class="md-button md-raised md-primary">
-            <h1 class="md-title">Play now!</h1>
-        </a></div>
-
+        </div>
     </div>
-    <div ng-if="currentView === 'about'" layout-padding layout-margin>
-        about
-    </div>
-    <div ng-if="currentView === 'videos'" layout-padding layout-margin layout-align="center center" class="content-90">
-        <md-grid-list md-cols="1" md-gutter="25%" md-row-height="16:12" flex="35" style="margin: auto; padding: 0 !important;">
-            <md-grid-tile layout="column" layout-align="center center">
-                <div layout="column" layout-align="center center" class="content">
+    <div ng-if="currentView === 'videos'" layout-padding layout-margin>
+        <h1 class="title-roboto" md-colors="{color: 'accent-600'}" style="margin: auto">Watch these fancy tutorials</h1>
+        <div layout="row" layout-align="center center">
+            <md-grid-list md-cols="2" md-gutter="3%" md-row-height="16:12" flex="80">
+                <md-grid-tile layout="column" layout-align="center center">
+                    <div layout="column" layout-align="center center" class="content">
+                        <video controls loop class="content-width-100">
+                            <source src="./videos/my%20maked%20steps.mp4" type="video/mp4">
+                        </video>
+                        <h1 class="md-title description" md-colors="{color: 'accent-800'}">Making steps</h1>
+                    </div>
+                </md-grid-tile>
+                <md-grid-tile layout="column" layout-align="center center">
+                    <div layout="column" layout-align="center center" class="content">
                     <video controls loop class="content-width-100">
-                        <source src="./videos/my%20maked%20steps.mp4" type="video/mp4">
+                        <source src="./videos/you%20spin%20me%20%60round%20%60round%20baby%20%60round%20%60round.mp4" type="video/mp4">
                     </video>
-                    <h1 class="md-title">Making steps</h1>
-                </div>
-            </md-grid-tile>
-            <md-grid-tile layout="column" layout-align="center center">
-                <div layout="column" layout-align="center center" class="content">
-                <video controls loop class="content-width-100">
-                    <source src="./videos/you%20spin%20me%20%60round%20%60round%20baby%20%60round%20%60round.mp4" type="video/mp4">
-                </video>
-                <h1 class="md-title">Turning basics</h1>
-                </div>
-            </md-grid-tile>
-            <md-grid-tile layout="column" layout-align="center center">
-                <div layout="column" layout-align="center center" class="content">
-                <video controls loop class="content-width-100">
-                    <source src="./videos/iAppleEater.mp4" type="video/mp4">
-                </video>
-                <h1 class="md-title">Eating apples</h1>
-                </div>
-            </md-grid-tile>
-            <md-grid-tile layout="column" layout-align="center center">
-                <div layout="column" layout-align="center center" class="content">
-                <video controls loop class="content-width-100">
-                    <source src="./videos/lo%20lo%20lo%20loop%20op%20op%20op.mp4" type="video/mp4">
-                </video>
-                <h1 class="md-title">Using loops</h1>
-                </div>
-            </md-grid-tile>
-        </md-grid-list>
-        <div layout-margin layout-padding layout-align="center center" layout="row"><a href="./robot.html" layout-padding layout-margin class="md-button md-raised md-primary">
-            <h1 class="md-title">Play now!</h1>
-        </a></div>
+                    <h1 class="md-title description" md-colors="{color: 'accent-800'}">Turning basics</h1>
+                    </div>
+                </md-grid-tile>
+                <md-grid-tile layout="column" layout-align="center center">
+                    <div layout="column" layout-align="center center" class="content">
+                    <video controls loop class="content-width-100">
+                        <source src="./videos/iAppleEater.mp4" type="video/mp4">
+                    </video>
+                    <h1 class="md-title description" md-colors="{color: 'accent-800'}">Eating apples</h1>
+                    </div>
+                </md-grid-tile>
+                <md-grid-tile layout="column" layout-align="center center">
+                    <div layout="column" layout-align="center center" class="content">
+                    <video controls loop class="content-width-100">
+                        <source src="./videos/lo%20lo%20lo%20loop%20op%20op%20op.mp4" type="video/mp4">
+                    </video>
+                    <h1 class="md-title description" md-colors="{color: 'accent-800'}">Using loops</h1>
+                    </div>
+                </md-grid-tile>
+            </md-grid-list>
+        </div>
 
     </div>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Copyright RobotTuroials</h2>
+            <span flex></span>
+            email@email.domain
+        </div>
+    </md-toolbar>
 </md-content>
 <script src="./node_modules/jquery/dist/jquery.min.js"></script>
 <script src="./node_modules/jquery.transit/jquery.transit.js"></script>
