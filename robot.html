@@ -1,0 +1,105 @@
+<html>
+<head>
+    <title>Kids coding tutorial</title>
+    <script src="./node_modules/jailed/lib/jailed.js"></script>
+    <link rel="stylesheet" href="./node_modules/intro.js/introjs.css">
+    <link rel="stylesheet" href="./node_modules/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="./app/stylesheets/styles.css">
+</head>
+<body layout-fill layout="column"
+      ng-app="code-tutorial"
+      ng-controller="robot-ctrl">
+<div
+    ng-intro-method="startGuide"
+    ng-intro-options="introOptions"
+    ng-intro-autostart="true">
+</div>
+<md-button class="md-fab md-hue-2 md-fab-bottom-right"
+           ng-disabled="isRunning" ng-click="run()"
+           id="runBtn">
+    <md-icon ng-show="!hasRun" md-svg-src="./app/images/run-code.svg"></md-icon>
+    <md-icon ng-show="hasRun" md-svg-src="./app/images/reload.svg"></md-icon>
+</md-button>
+<md-toolbar class="md-medium-tall" md-whiteframe="6">
+    <div layout="row" layout-align="bottom center">
+        <!--<md-button ng-hide="true" class="md-icon-button">-->
+            <!--<md-icon md-svg-src="./app/images/menu.svg"></md-icon>-->
+        <!--</md-button>-->
+        <h1 class="title" md-colors="{color:'accent-600-.8'}">Kid-Code</h1>
+        <span flex></span>
+        <md-button class="md-fab" id="tutorialBtn" ng-click="startGuide()">
+            <md-icon md-svg-src="./app/images/help-tutorial.svg"></md-icon>
+        </md-button>
+        <md-button
+                ng-class="{'md-fab': !tooltipsActive, 'md-icon-button fab-like': tooltipsActive}"
+                ng-click="showHelpTips($event)" id="helpTipsBtn">
+            <md-icon md-svg-src="./app/images/help-tooltip.svg"></md-icon>
+        </md-button>
+    </div>
+</md-toolbar>
+<div class="content" layout="row" flex>
+<md-content flex-gt-sm="35" flex-sm="50" flex-xs="100" ng-hide="$mdMedia('sm')" layout-padding md-whiteframe="5">
+    <md-grid-list id="board" md-cols="5" md-gutter="2%" md-row-height="1:1">
+        <md-grid-tile
+                md-colors="{background: 'accent-600-.50'}"
+                class="md-accent robot-cell"
+                ng-repeat="cell in board track by $index"
+                md-whiteframe="4">
+            <img class="icon robot" ng-show="cell.robot" ng-src="{{cell.robot ? cell.robot : cell.empty}}"
+                 ng-class="robotClass">
+            <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}"
+                     class="icon apple up-robot"
+                     ng-animate="'apple'"></md-icon>
+        </md-grid-tile>
+    </md-grid-list>
+</md-content>
+<md-sidenav md-component-id="{{commandsId}}" class="md-sidenav-left md-whiteframe-z2"
+            md-is-locked-open="commandsPinned">
+    <md-toolbar md-colors="{background: 'primary-300'}">
+        <div class="md-toolbar-tools">
+            <md-button class="md-icon-button md-accent" ng-show="!isRunning" ng-click="closeCommands($event)">
+                <md-icon md-svg-src="./app/images/arrow-left.svg"></md-icon>
+            </md-button>
+            <h1>Commands</h1>
+        </div>
+    </md-toolbar>
+    <md-list>
+        <md-list-item ng-repeat="command in commands track by $index"
+                      md-colors="command.executed ? {background: 'accent-300'} : {background: 'background'}">
+        <span class="md-title">
+            {{command.command}}
+        </span>
+        </md-list-item>
+    </md-list>
+</md-sidenav>
+<md-content flex-gt-sm="65" flex-sm="50" flex-xs="100"
+            class="content" layout-margin layout-fill layout="column"
+            id="editor">
+    <div class="content" layout-margin md-whiteframe="4">
+        <div ui-ace="aceOptions" layout-fill></div>
+    </div>
+    <!--<div layout-padding>-->
+    <!--<span flex></span>-->
+    <!--<md-button ng-click="run()">Run</md-button>-->
+    <!--</div>-->
+</md-content>
+</div>
+<!--<md-toolbar>-->
+    <!--<div class="md-toolbar-tools">-->
+        <!--<md-truncate>Copyleft</md-truncate>-->
+    <!--</div>-->
+<!--</md-toolbar>-->
+<script src="./node_modules/jquery/dist/jquery.min.js"></script>
+<script src="./node_modules/jquery.transit/jquery.transit.js"></script>
+<script src="./node_modules/angular/angular.min.js"></script>
+<script src="./node_modules/angular-animate/angular-animate.min.js"></script>
+<script src="./node_modules/angular-aria/angular-aria.min.js"></script>
+<script src="./node_modules/angular-messages/angular-messages.min.js"></script>
+<script src="./node_modules/angular-material/angular-material.min.js"></script>
+<script src="./node_modules/ace-builds/src-min-noconflict/ace.js"></script>
+<script src="./node_modules/angular-ui-ace/src/ui-ace.js"></script>
+<script src="./node_modules/intro.js/intro.js"></script>
+<script src="./node_modules/angular-intro.js/build/angular-intro.min.js"></script>
+<script src="./app/app.js"></script>
+</body>
+</html>

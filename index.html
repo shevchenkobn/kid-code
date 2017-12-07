@@ -1,94 +1,135 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Kids coding tutorial</title>
-    <script src="./node_modules/jailed/lib/jailed.js"></script>
-    <link rel="stylesheet" href="./node_modules/intro.js/introjs.css">
+    <meta charset="UTF-8">
+    <title>Kid-Code: Wellcome!</title>
     <link rel="stylesheet" href="./node_modules/angular-material/angular-material.min.css">
     <link rel="stylesheet" href="./app/stylesheets/styles.css">
 </head>
-<body layout-fill layout="column"
-      ng-app="code-tutorial"
-      ng-controller="robot-ctrl">
-<div
-    ng-intro-method="startGuide"
-    ng-intro-options="introOptions"
-    ng-intro-autostart="true">
-</div>
-<md-button class="md-fab md-hue-2 md-fab-bottom-right"
-           ng-disabled="isRunning" ng-click="run()"
-           id="runBtn">
-    <md-icon ng-show="!hasRun" md-svg-src="./app/images/run-code.svg"></md-icon>
-    <md-icon ng-show="hasRun" md-svg-src="./app/images/reload.svg"></md-icon>
-</md-button>
-<md-toolbar class="md-medium-tall" md-whiteframe="6">
-    <div layout="row" layout-align="bottom center">
-        <!--<md-button ng-hide="true" class="md-icon-button">-->
-            <!--<md-icon md-svg-src="./app/images/menu.svg"></md-icon>-->
-        <!--</md-button>-->
-        <h1 class="title" md-colors="{color:'accent-600-.8'}">Kid-Code</h1>
-        <span flex></span>
-        <md-button class="md-fab" id="tutorialBtn" ng-click="startGuide()">
-            <md-icon md-svg-src="./app/images/help-tutorial.svg"></md-icon>
-        </md-button>
-        <md-button
-                ng-class="{'md-fab': !tooltipsActive, 'md-icon-button fab-like': tooltipsActive}"
-                ng-click="showHelpTips($event)" id="helpTipsBtn">
-            <md-icon md-svg-src="./app/images/help-tooltip.svg"></md-icon>
-        </md-button>
-    </div>
-</md-toolbar>
-<div class="content" layout="row" flex>
-<md-content flex-gt-sm="35" flex-sm="50" flex-xs="100" ng-hide="$mdMedia('sm')" layout-padding md-whiteframe="5">
-    <md-grid-list id="board" md-cols="5" md-gutter="2%" md-row-height="1:1">
-        <md-grid-tile
-                md-colors="{background: 'accent-600-.50'}"
-                class="md-accent robot-cell"
-                ng-repeat="cell in board track by $index"
-                md-whiteframe="4">
-            <img class="icon robot" ng-show="cell.robot" src="{{cell.robot ? cell.robot : cell.empty}}"
-                 ng-class="robotClass">
-            <md-icon ng-show="cell.apple" md-svg-src="{{cell.apple ? cell.apple : ''}}"
-                     class="icon apple up-robot"
-                     ng-animate="'apple'"></md-icon>
-        </md-grid-tile>
-    </md-grid-list>
-</md-content>
-<md-sidenav md-component-id="{{commandsId}}" class="md-sidenav-left md-whiteframe-z2"
-            md-is-locked-open="commandsPinned">
-    <md-toolbar md-colors="{background: 'primary-300'}">
-        <div class="md-toolbar-tools">
-            <md-button class="md-icon-button md-accent" ng-show="!isRunning" ng-click="closeCommands($event)">
-                <md-icon md-svg-src="./app/images/arrow-left.svg"></md-icon>
-            </md-button>
-            <h1>Commands</h1>
+<body ng-app="code-tutorial" ng-controller="landing-ctrl">
+<md-nav-bar md-selected-nav-item="'index'">
+    <md-nav-item name="index" md-nav-click="goto('index')">
+        Index
+    </md-nav-item>
+    <md-nav-item md-colors="{background: 'primary-500'}" md-nav-href="./robot.html">
+        Play!
+    </md-nav-item>
+    <md-nav-item name="about" md-nav-click="goto('about')">
+        About
+    </md-nav-item>
+    <md-nav-item name="videos" md-nav-click="goto('videos')">
+        Tutorials
+    </md-nav-item>
+</md-nav-bar>
+<md-content class="content-90">
+    <div ng-if="currentView === 'index'">
+        <div class="background-video">
+            <video autoplay muted loop>
+                <source src="./videos/lo%20lo%20lo%20loop%20op%20op%20op.mp4" type="video/mp4">
+                <source src="./videos/iAppleEater.mp4" type="video/mp4">
+                <source src="./videos/my%20maked%20steps.mp4" type="video/mp4">
+                <source src="./videos/you%20spin%20me%20%60round%20%60round%20baby%20%60round%20%60round.mp4" type="video/mp4">
+            </video>
+            <div class="overlay content" layout="column" layout-align="center center">
+                <h1 layout-padding class="title" md-colors="{color: 'accent-800'}">
+                    Kid-Code
+                </h1>
+                <a href="./robot.html" layout-padding layout-margin class="md-button md-raised md-primary">
+                    <h1 class="md-title">Play now!</h1>
+                </a>
+            </div>
         </div>
-    </md-toolbar>
-    <md-list>
-        <md-list-item ng-repeat="command in commands track by $index"
-                      md-colors="command.executed ? {background: 'accent-300'} : {background: 'background'}">
-        <span class="md-title">
-            {{command.command}}
-        </span>
-        </md-list-item>
-    </md-list>
-</md-sidenav>
-<md-content flex-gt-sm="65" flex-sm="50" flex-xs="100"
-            class="content" layout-margin layout-fill layout="column"
-            id="editor">
-    <div class="content" layout-margin md-whiteframe="4">
-        <div ui-ace="aceOptions" layout-fill></div>
+        <md-grid-list md-cols="5" md-gutter="5%" md-row-height="0.382:0.612" layout-margin>
+            <md-grid-tile>
+                <md-card layout-align="center center" md-whiteframe="5">
+                    <img src="./app/images/robot.png">
+                    <md-card-content>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+            <md-grid-tile>
+                <md-card layout-align="center center" md-whiteframe="5">
+                    <img src="./app/images/robot.png">
+                    <md-card-content>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+            <md-grid-tile>
+                <md-card layout-align="center center" md-whiteframe="5">
+                    <img src="./app/images/robot.png">
+                    <md-card-content>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+            <md-grid-tile>
+                <md-card layout-align="center center" md-whiteframe="5">
+                    <img src="./app/images/robot.png">
+                    <md-card-content>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+            <md-grid-tile>
+                <md-card layout-align="center center" md-whiteframe="5">
+                    <img src="./app/images/robot.png">
+                    <md-card-content>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                    </md-card-content>
+                </md-card>
+            </md-grid-tile>
+        </md-grid-list>
+        <div layout-margin layout-padding layout-align="center center" layout="row"><a href="./robot.html" layout-padding layout-margin class="md-button md-raised md-primary">
+            <h1 class="md-title">Play now!</h1>
+        </a></div>
+
     </div>
-    <!--<div layout-padding>-->
-    <!--<span flex></span>-->
-    <!--<md-button ng-click="run()">Run</md-button>-->
-    <!--</div>-->
+    <div ng-if="currentView === 'about'" layout-padding layout-margin>
+        about
+    </div>
+    <div ng-if="currentView === 'videos'" layout-padding layout-margin layout-align="center center" class="content-90">
+        <md-grid-list md-cols="1" md-gutter="25%" md-row-height="16:12" flex="35" style="margin: auto; padding: 0 !important;">
+            <md-grid-tile layout="column" layout-align="center center">
+                <div layout="column" layout-align="center center" class="content">
+                    <video controls loop class="content-width-100">
+                        <source src="./videos/my%20maked%20steps.mp4" type="video/mp4">
+                    </video>
+                    <h1 class="md-title">Making steps</h1>
+                </div>
+            </md-grid-tile>
+            <md-grid-tile layout="column" layout-align="center center">
+                <div layout="column" layout-align="center center" class="content">
+                <video controls loop class="content-width-100">
+                    <source src="./videos/you%20spin%20me%20%60round%20%60round%20baby%20%60round%20%60round.mp4" type="video/mp4">
+                </video>
+                <h1 class="md-title">Turning basics</h1>
+                </div>
+            </md-grid-tile>
+            <md-grid-tile layout="column" layout-align="center center">
+                <div layout="column" layout-align="center center" class="content">
+                <video controls loop class="content-width-100">
+                    <source src="./videos/iAppleEater.mp4" type="video/mp4">
+                </video>
+                <h1 class="md-title">Eating apples</h1>
+                </div>
+            </md-grid-tile>
+            <md-grid-tile layout="column" layout-align="center center">
+                <div layout="column" layout-align="center center" class="content">
+                <video controls loop class="content-width-100">
+                    <source src="./videos/lo%20lo%20lo%20loop%20op%20op%20op.mp4" type="video/mp4">
+                </video>
+                <h1 class="md-title">Using loops</h1>
+                </div>
+            </md-grid-tile>
+        </md-grid-list>
+        <div layout-margin layout-padding layout-align="center center" layout="row"><a href="./robot.html" layout-padding layout-margin class="md-button md-raised md-primary">
+            <h1 class="md-title">Play now!</h1>
+        </a></div>
+
+    </div>
 </md-content>
-</div>
-<!--<md-toolbar>-->
-    <!--<div class="md-toolbar-tools">-->
-        <!--<md-truncate>Copyleft</md-truncate>-->
-    <!--</div>-->
-<!--</md-toolbar>-->
 <script src="./node_modules/jquery/dist/jquery.min.js"></script>
 <script src="./node_modules/jquery.transit/jquery.transit.js"></script>
 <script src="./node_modules/angular/angular.min.js"></script>

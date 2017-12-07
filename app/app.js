@@ -767,7 +767,24 @@ angular.module('code-tutorial', ['ngMaterial', 'ui.ace', 'ngAnimate', 'angular-i
       disableInteraction: true,
       exitOnOverlayClick: false
     };
+  }).controller('landing-ctrl', function($scope) {
+    $scope.currentView = 'index';
+    $scope.goto = function(page) {
+      switch (page) {
+        case 'index':
+          $scope.currentView = 'index';
+          break;
+        case 'about':
+          $scope.currentView = 'about';
+          break;
+        case 'videos':
+          $scope.currentView = 'videos';
+          break;
+      }
+    }
+    
   });
+
 /*
 robot.turnRight();
 robot.takeApple();

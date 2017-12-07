@@ -13,9 +13,29 @@ $animation-duration: 0.5s;
 body, html {
     height: 100%;
 }
+.background-video {
+  position: relative;
+  video {
+    z-index: -1;
+  }
+}
+.background-video .overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 .content {
   height: 100%;
 }
+.content-90 {
+  height: 90%;
+}
+.content-width-100 {
+  width: 100%;
+}
+
 .md-button.md-icon-button.fab-like {
   height: 56px;
   width: 56px;
